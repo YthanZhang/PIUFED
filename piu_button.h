@@ -53,6 +53,7 @@ typedef struct piu_struct_Button
 {
     bool isPressed;            // The button state
     bool oldPress;             // the button state of the previous tick
+    bool pendPress;            // The newest button state
     uint16_t stableCounter;    // Ticks the button has been stable
 
     bool stableState;            // The stable button state
@@ -66,8 +67,8 @@ typedef struct piu_struct_Button
 /**
  * @brief Use this function to initialized a piu_Button struct
  * @param buttonStruct Pointer to a uninitialized piu_Button struct
- * @param stableThreshold The tick update threshold for determine if press or
- *         release is stable
+ * @param stableThreshold The threshold for now many ticks are needed to
+ *      determine if press or release is stable
  * @return Pointer to the same piu_Button struct passed in
  */
 piu_Button* piu_Button_construct(piu_Button* buttonStruct,
@@ -76,30 +77,39 @@ piu_Button* piu_Button_construct(piu_Button* buttonStruct,
 
 /**
  * @brief Pass the button state to this function
- * @param buttonStruct Pointer to a button struct
+ * @param buttonStruct Pointer to a piu_Button struct
  * @param newState The most current state of the button
  */
 void piu_Button_updateState(piu_Button* buttonStruct, bool newState);
 
 /**
  * @brief Should call this function at a constant interval
- * @param buttonStruct Pointer to a button struct
+ * @param buttonStruct Pointer to a piu_Button struct
  */
 void piu_Button_tick(piu_Button* buttonStruct);
 
 /**
  * @brief Get the solid state of the button
- * @param buttonStruct Pointer to a button struct
+ * @param buttonStruct Pointer to a piu_Button struct
  * @return @p true if the button is stably pressed, @p false if the button is
  *      stably unpressed
  */
 bool piu_Button_stableState(piu_Button* buttonStruct);
 /**
  * @brief Get how many ticks the current state has been stable for
- * @param buttonStruct Pointer to a button struct
+ * @param buttonStruct Pointer to a piu_Button struct
  * @return Ticks the current state has been stable for
  */
 uint16_t piu_Button_stableLength(piu_Button* buttonStruct);
+
+/**
+ * @brief Set new state stable threshold
+ * @param buttonStruct Pointer to a piu_Button struct
+ * @param stableThreshold The new state stable threshold
+ * @return The new stable threshold
+ */
+uint16_t piu_Button_setStableThreshold(piu_Button* buttonStruct,
+                                       uint16_t stableThreshold);
 
 
 #ifdef __cplusplus

@@ -34,10 +34,12 @@
 #include "piu_button.h"
 
 
-piu_Button* piu_Button_construct(piu_Button* buttonStruct, uint16_t stableThreshold)
+piu_Button* piu_Button_construct(piu_Button* buttonStruct,
+                                 uint16_t stableThreshold)
 {
     buttonStruct->isPressed           = false;
     buttonStruct->oldPress            = false;
+    buttonStruct->pendPress           = false;
     buttonStruct->stableState         = false;
     buttonStruct->stableCounter       = 0;
     buttonStruct->stableLengthCounter = 0;
@@ -49,9 +51,9 @@ piu_Button* piu_Button_construct(piu_Button* buttonStruct, uint16_t stableThresh
 
 void piu_Button_updateState(piu_Button* buttonStruct, bool newState)
 {
-    if (newState != buttonStruct->isPressed)
+    buttonStruct->pendPress = newState;
+    if (newState != buttonStruct->oldPress)
     {
-        buttonStruct->oldPress  = buttonStruct->isPressed;
         buttonStruct->isPressed = newState;
     }
 }
@@ -63,16 +65,15 @@ void piu_Button_tick(piu_Button* buttonStruct)
     {
         ++(buttonStruct->stableLengthCounter);
     }
+    if (buttonStruct->stableCounter < UINT16_MAX)
+    {
+        ++(buttonStruct->stableCounter);
+    }
 
     if (buttonStruct->isPressed != buttonStruct->oldPress)
     {
         buttonStruct->oldPress      = buttonStruct->isPressed;
         buttonStruct->stableCounter = 0;
-    }
-
-    if (buttonStruct->stableCounter < UINT16_MAX)
-    {
-        ++(buttonStruct->stableCounter);
     }
     if (buttonStruct->stableCounter == buttonStruct->stableThreshold &&
         buttonStruct->isPressed != buttonStruct->stableState)
@@ -80,6 +81,8 @@ void piu_Button_tick(piu_Button* buttonStruct)
         buttonStruct->stableState         = buttonStruct->isPressed;
         buttonStruct->stableLengthCounter = 0;
     }
+    
+    buttonStruct->isPressed = buttonStruct->pendPress;
 }
 
 bool piu_Button_stableState(piu_Button* buttonStruct)
@@ -89,4 +92,10 @@ bool piu_Button_stableState(piu_Button* buttonStruct)
 uint16_t piu_Button_stableLength(piu_Button* buttonStruct)
 {
     return buttonStruct->stableLengthCounter;
+}
+
+uint16_t piu_Button_setStableThreshold(piu_Button* buttonStruct,
+                                       uint16_t stableThreshold)
+{
+    return buttonStruct->stableThreshold = stableThreshold;
 }
