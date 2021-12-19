@@ -31,6 +31,44 @@
  * You may obtain a copy of the License at: opensource.org/licenses/BSD-2-Clause
  ******************************************************************************/
 
+
+/*******************************************************************************
+ * @file piu_button.h
+ *
+ * The Button struct and related functions(methods) provides tools to handle
+ * button input and de-jitter @n
+ *
+ * The function <b>piu_Button_updateState</b> and <b>piu_Button_tick</b> are the
+ *  core of the button utility @n
+ *
+ * <b>piu_Button_updateState</b> handles state update, should always provide
+ *  this function with the latest hardware input state and should be called as
+ *  frequent as possible @n
+ *
+ * <b>piu_Button_tick</b> must be called at a constant interval, this interval
+ *  determines the granularity of your control over the button state
+ *
+ *
+ * @example
+ * <pre>
+ * Wish to have a button press longer than 1ms to be considered valid input: @n
+ *  First call <b>piu_Button_construct</b> with a uninitialized <b>Button</b>
+ *  struct, with @p stableThreshold set to 5
+ *  Then make sure <b>piu_Button_tick</b> is called every 1ms
+ *  Feed the latest button state to the <b>Button</b> struct with
+ *  <b>piu_Button_updateState</b> constantly
+ *
+ *  That's it, call <b>piu_Button_stableState</b> to get the stable state of the
+ *  button
+ *
+ * @note If stableThreshold is set to 0, any jitter, even if the duration lands
+ *  between two ticks, as long as updateState picked it up, the next tick will
+ *  still set stable state to the jitter
+ * </pre>
+ */
+
+
+
 #ifndef PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_BUTTON_H
 #define PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_BUTTON_H
 
@@ -41,7 +79,6 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
-
 
 /**
  * @brief This struct holds data relevant to a button
