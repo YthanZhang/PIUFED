@@ -1,0 +1,18 @@
+//
+// Created by YthanZhang on 2021/12/20.
+//
+
+#ifndef PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_VTIMER_H
+#define PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_VTIMER_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif    // PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_VTIMER_H
