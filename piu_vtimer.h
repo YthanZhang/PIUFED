@@ -75,13 +75,16 @@ typedef struct piu_struct_VTimer
 
 
 /**
- *
- * @param vTimer
- * @param counterReloadValue
- * @param counterDirection
- * @param timerMode
- * @param callbackFunc
- * @return
+ * @brief Use this function to initialized a piu_VTimer struct
+ * @param vTimer Pointer to an uninitialized piu_VTimer struct
+ * @param counterReloadValue The reload value the timer counter will be set to
+ *      on counter overflow or on manual counter reload
+ * @param counterDirection The direction counter should go, see piu_VTCDir
+ * @param timerMode Should timer stop after one overflow or be continuous, see
+ *      piu_VTMode
+ * @param callbackFunc The callback function piu_VTimer_tick will call on
+ *      overflow event, set to @p NULL for no callback
+ * @return Pointer to the same piu_VTimer struct passed in
  */
 piu_VTimer* piu_VTimer_construct(piu_VTimer* vTimer,
                                  uint16_t counterReloadValue,
@@ -89,22 +92,104 @@ piu_VTimer* piu_VTimer_construct(piu_VTimer* vTimer,
                                  piu_VTMode timerMode,
                                  void (*callbackFunc)(void));
 
+/**
+ * @brief Should call this function for timer update, preferably with a
+ *      consistent interval
+ * @param vTimer Pointer to a piu_VTimer struct
+ */
 void piu_VTimer_tick(piu_VTimer* vTimer);
 
+/**
+ * @brief Use this function to set new counter reload value
+ * @note The counter reload value can be changed at any time, even when the
+ *      counter is active
+ * @param vTimer piu_VTimer struct
+ * @param counterReloadValue New counter reload value
+ * @return The counter reload value
+ */
 uint16_t piu_VTimer_setCounterReloadValue(piu_VTimer* vTimer,
                                           uint16_t counterReloadValue);
+/**
+ * @brief Use this function to set counter direction
+ * @warning A new value can only be set when counter is not active. If called
+ *      when counter is active, the count direction will not change and the
+ *      original count direction will be returned
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @param countDirection New count direction
+ * @return The count direction
+ */
 piu_VTCDir piu_VTimer_setCountDirection(piu_VTimer* vTimer,
                                         piu_VTCDir countDirection);
+/**
+ * @brief Use this function to set time to be in one shot mode or in continuous
+ *      mode
+ * @warning A new value can only be set when counter is not active. If called
+ *      when counter is active, the timer mode will not change and the original
+ *      timer mode will be returned
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @param timerMode New timer mode, can be either @p piu_VTMode_OneShot or @p
+ * piu_VTMode_Continuous
+ * @return The timer mode
+ */
 piu_VTMode piu_VTimer_setTimerMode(piu_VTimer* vTimer, piu_VTMode timerMode);
+/**
+ * @brief Use this function to set callback function on counter overflow
+ * @note Set to NULL to disable callback function
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @param callbackFunc Pointer to new callback function, use @p NULL to disable
+ *      callback
+ */
 void piu_VTimer_setCallback(piu_VTimer* vTimer, void (*callbackFunc)(void));
 
+/**
+ * @brief Start counter, have no effect if counter already active
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @return The current counter value
+ */
 uint16_t piu_VTimer_startCounter(piu_VTimer* vTimer);
+/**
+ * @brief Stop counter, have no effect if counter is not active
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @return The current counter value
+ */
 uint16_t piu_VTimer_stopCounter(piu_VTimer* vTimer);
+/**
+ * @brief Reset counter to counter reload value
+ * @note This function will have effect regardless if counter is active or not
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @return The counter reload value
+ */
 uint16_t piu_VTimer_reloadCounter(piu_VTimer* vTimer);
+/**
+ * @brief Get the current counter value
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @return THe counter value
+ */
 uint16_t piu_VTimer_getCounter(piu_VTimer* vTimer);
 
+/**
+ * @brief Get overflow flag
+ * @note The flag will be cleared automatically when this function is called
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @return @p true if there were an overflow since the last call, else return @p
+ *      false
+ */
 bool piu_VTimer_getOverflow(piu_VTimer* vTimer);
+/**
+ * @brief Get over overflow flag
+ * @note If the overflow flag was still set when the second overflow happened,
+ *      the over overflow flag will be set
+ * @note This flag must be cleared explicitly with function
+ *      piu_VTimer_clearOverOverflow
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @return @p true if there were an over overflow, else return @p false
+ */
 bool piu_VTimer_getOverOverflow(piu_VTimer* vTimer);
+/**
+ * @brief Check if counter/timer is currently active
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @return @p true if counter/timer is active, else return @p false
+ */
 bool piu_VTimer_getCounterActive(piu_VTimer* vTimer);
 
 
