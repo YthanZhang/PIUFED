@@ -66,7 +66,7 @@ typedef struct piu_struct_VTimer
 
     uint16_t counterReloadValue;
     uint16_t counter;
-    piu_VTCDir counterDirection;
+    piu_VTCDir countDirection;
 
     bool flag_overflow;
     bool flag_overOverflow;
@@ -92,7 +92,7 @@ piu_VTimer* piu_VTimer_construct(piu_VTimer* vTimer,
 void piu_VTimer_tick(piu_VTimer* vTimer);
 
 uint16_t piu_VTimer_setCounterReloadValue(piu_VTimer* vTimer,
-                                          uint16_t newCounterReloadValue);
+                                          uint16_t counterReloadValue);
 piu_VTCDir piu_VTimer_setCountDirection(piu_VTimer* vTimer,
                                         piu_VTCDir countDirection);
 piu_VTMode piu_VTimer_setTimerMode(piu_VTimer* vTimer, piu_VTMode timerMode);

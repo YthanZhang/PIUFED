@@ -43,7 +43,7 @@ piu_VTimer* piu_VTimer_construct(piu_VTimer* vTimer,
 {
     vTimer->counter            = counterReloadValue;
     vTimer->counterReloadValue = counterReloadValue;
-    vTimer->counterDirection   = counterDirection;
+    vTimer->countDirection     = counterDirection;
 
     vTimer->timerMode = timerMode;
 
@@ -67,13 +67,13 @@ void piu_VTimer_tick(piu_VTimer* vTimer)
 
     uint16_t oldCount = vTimer->counter;
     bool overflow     = false;
-    if (vTimer->counterDirection == piu_VTCDir_Up)
+    if (vTimer->countDirection == piu_VTCDir_Up)
     {
         ++(vTimer->counter);
         // If less than old count, an overflow happened
         overflow = vTimer->counter < oldCount;
     }
-    else if (vTimer->counterDirection == piu_VTCDir_Down)
+    else if (vTimer->countDirection == piu_VTCDir_Down)
     {
         --(vTimer->counter);
         // If greater than old count, an overflow happened
@@ -93,14 +93,19 @@ void piu_VTimer_tick(piu_VTimer* vTimer)
         {
             vTimer->flag_counterActive = false;
         }
+        
+        if(vTimer->callback != NULL)
+        {
+            vTimer->callback();
+        }
     }
 }
 
 
 uint16_t piu_VTimer_setCounterReloadValue(piu_VTimer* vTimer,
-                                          uint16_t newCounterReloadValue)
+                                          uint16_t counterReloadValue)
 {
-    return vTimer->counterReloadValue = newCounterReloadValue;
+    return vTimer->counterReloadValue = counterReloadValue;
 }
 
 piu_VTCDir piu_VTimer_setCountDirection(piu_VTimer* vTimer,
@@ -108,10 +113,10 @@ piu_VTCDir piu_VTimer_setCountDirection(piu_VTimer* vTimer,
 {
     if(!vTimer->flag_counterActive)
     {
-        vTimer->counterDirection = countDirection;
+        vTimer->countDirection = countDirection;
     }
     
-    return vTimer->counterDirection;
+    return vTimer->countDirection;
 }
 
 piu_VTMode piu_VTimer_setTimerMode(piu_VTimer* vTimer, piu_VTMode timerMode)
