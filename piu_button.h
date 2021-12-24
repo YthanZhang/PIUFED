@@ -103,7 +103,7 @@ typedef struct piu_struct_Button
 
 /**
  * @brief Use this function to initialized a piu_Button struct
- * @param buttonStruct Pointer to a uninitialized piu_Button struct
+ * @param buttonStruct Pointer to an uninitialized piu_Button struct
  * @param stableThreshold The threshold for now many ticks are needed to
  *      determine if press or release is stable
  * @return Pointer to the same piu_Button struct passed in
