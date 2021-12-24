@@ -161,6 +161,11 @@ uint16_t piu_VTimer_getCounter(piu_VTimer* vTimer)
     return vTimer->counter;
 }
 
+uint16_t piu_VTimer_getCounterReloadValue(piu_VTimer* vTimer)
+{
+    return vTimer->counterReloadValue;
+}
+
 
 bool piu_VTimer_getOverflow(piu_VTimer* vTimer)
 {
