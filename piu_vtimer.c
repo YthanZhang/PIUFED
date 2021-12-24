@@ -89,6 +89,7 @@ void piu_VTimer_tick(piu_VTimer* vTimer)
         vTimer->flag_overflow = true;
 
         vTimer->counter = vTimer->counterReloadValue;
+        
         if (vTimer->timerMode == piu_VTMode_OneShot)
         {
             vTimer->flag_counterActive = false;
@@ -114,6 +115,8 @@ piu_VTCDir piu_VTimer_setCountDirection(piu_VTimer* vTimer,
     if(!vTimer->flag_counterActive)
     {
         vTimer->countDirection = countDirection;
+
+        piu_VTimer_reloadCounter(vTimer);
     }
     
     return vTimer->countDirection;

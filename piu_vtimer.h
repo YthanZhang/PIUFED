@@ -112,8 +112,9 @@ uint16_t piu_VTimer_setCounterReloadValue(piu_VTimer* vTimer,
 /**
  * @brief Use this function to set counter direction
  * @warning A new value can only be set when counter is not active. If called
- *      when counter is active, the count direction will not change and the
- *      original count direction will be returned
+ *      when counter is active, the count direction will <b>NOT</b> change and
+ *      the original count direction will be returned
+ * @warning When a new direction is set, the counter value will reload
  * @param vTimer Pointer to a piu_VTimer struct
  * @param countDirection New count direction
  * @return The count direction
