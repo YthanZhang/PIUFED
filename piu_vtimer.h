@@ -192,6 +192,15 @@ bool piu_VTimer_getOverOverflow(piu_VTimer* vTimer);
  */
 bool piu_VTimer_getCounterActive(piu_VTimer* vTimer);
 
+/**
+ * @brief Clear over overflow flag
+ * @note this flag can only be cleared explicitly with this function
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @return @p true if the over overflow flag was set prior to the call of this
+ *      function, else return @p false
+ */
+bool piu_VTimer_clearOverOverflow(piu_VTimer* vTimer);
+
 
 
 #ifdef __cplusplus

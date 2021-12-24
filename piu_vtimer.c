@@ -178,3 +178,11 @@ bool piu_VTimer_getCounterActive(piu_VTimer* vTimer)
 {
     return vTimer->flag_counterActive;
 }
+
+
+bool piu_VTimer_clearOverOverflow(piu_VTimer* vTimer)
+{
+    bool flag = vTimer->flag_overOverflow;
+    vTimer->flag_overOverflow = false;
+    return flag;
+}
