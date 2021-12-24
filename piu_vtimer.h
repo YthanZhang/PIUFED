@@ -172,6 +172,12 @@ uint16_t piu_VTimer_getCounter(piu_VTimer* vTimer);
  * @return The counter reload value
  */
 uint16_t piu_VTimer_getCounterReloadValue(piu_VTimer* vTimer);
+/**
+ * @brief Get count direction
+ * @param vTimer Pointer to a piu_VTimer struct
+ * @return The count direction
+ */
+piu_VTCDir piu_VTimer_getCountDirection(piu_VTimer* vTimer);
 
 /**
  * @brief Get overflow flag
