@@ -135,6 +135,8 @@ piu_VTMode piu_VTimer_setTimerMode(piu_VTimer* vTimer, piu_VTMode timerMode);
 /**
  * @brief Use this function to set callback function on counter overflow
  * @note Set to NULL to disable callback function
+ * @warning A new callback can only be set when counter is not active. If called
+ *      when counter is active, the callback function will <b>NOT</b> change
  * @param vTimer Pointer to a piu_VTimer struct
  * @param callbackFunc Pointer to new callback function, use @p NULL to disable
  *      callback
