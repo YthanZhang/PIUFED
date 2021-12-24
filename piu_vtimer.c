@@ -124,12 +124,7 @@ piu_VTCDir piu_VTimer_setCountDirection(piu_VTimer* vTimer,
 
 piu_VTMode piu_VTimer_setTimerMode(piu_VTimer* vTimer, piu_VTMode timerMode)
 {
-    if(!vTimer->flag_counterActive)
-    {
-        vTimer->timerMode = timerMode;
-    }
-    
-    return vTimer->timerMode;
+    return vTimer->timerMode = timerMode;
 }
 
 void piu_VTimer_setCallback(piu_VTimer* vTimer, void (*callbackFunc)(void))

@@ -124,9 +124,8 @@ piu_VTCDir piu_VTimer_setCountDirection(piu_VTimer* vTimer,
 /**
  * @brief Use this function to set time to be in one shot mode or in continuous
  *      mode
- * @warning A new value can only be set when counter is not active. If called
- *      when counter is active, the timer mode will not change and the original
- *      timer mode will be returned
+ * @note Timer mode can be changed at any time, even when the counter is
+ *      active
  * @param vTimer Pointer to a piu_VTimer struct
  * @param timerMode New timer mode, can be either @p piu_VTMode_OneShot or @p
  * piu_VTMode_Continuous
