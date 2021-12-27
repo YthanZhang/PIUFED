@@ -31,5 +31,5 @@
 
 project(PIUFED C)
 
-add_library(PIUFED piu_button.c piu_vtimer.c)
+add_library(PIUFED piu_button.c piu_vtimer.c piu_margined_linear.c)
 
