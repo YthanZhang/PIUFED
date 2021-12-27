@@ -1,7 +1,7 @@
 # Platform Independent Utilities For Embedded Development
 
 This is a small personal repo where the more portable parts of projects I work
-on are placed here. You can feel free to use then as long as you follow the
+on are placed here. You are free to use then as long as you follow the
 [BSD-2-Clause](opensource.org/licenses/BSD-2-Clause) license.
 
 ## CMake
@@ -16,9 +16,9 @@ include_directories({PATH_TO_PIUFED}/PIUFED)
 add_subdirectory({PATH_TO_PIUFED}/PIUFED)
 ```
 
-Then add this line after your `add_executable({PROJECT_NAME} ${PROJECT_FILES})`
-line, replace `{PROJECT_NAME}` with your actual project name
+Then add this line after your `add_executable({TARGET_NAME} ${PROJECT_FILES})`
+line, replace `{TARGET_NAME}` with your actual project name
 
 ```cmake
-target_link_libraries({PROJECT_NAME} PRIVATE PIUFED)
+target_link_libraries({TARGET_NAME} PRIVATE PIUFED)
 ```
