@@ -56,13 +56,13 @@ typedef enum enum_piu_MarginSection
 typedef struct struct_piu_MarginedLinear
 {
     piu_MarginSection currentState;
-    
+
     uint16_t offPoint;
     uint16_t onPoint;
     uint16_t lowLinearPoint;
     uint16_t highLinearPoint;
-    uint16_t stepUpPoint;
     uint16_t stepDownPoint;
+    uint16_t stepUpPoint;
 
     uint16_t offVal;
     uint16_t lowFlatVal;
@@ -70,7 +70,7 @@ typedef struct struct_piu_MarginedLinear
     uint16_t maxFlatVal;
 
     float linearRate;
-    
+
     uint16_t lastInput;
 } piu_MarginedLinear;
 
@@ -81,8 +81,8 @@ piu_MarginedLinear* piu_MarginedLinear_construct(
     uint16_t onPoint,
     uint16_t lowLinearPoint,
     uint16_t highLinearPoint,
-    uint16_t stepUpPoint,
     uint16_t stepDownPoint,
+    uint16_t stepUpPoint,
     uint16_t offVal,
     uint16_t lowFlatVal,
     uint16_t highFlatVal,
@@ -93,30 +93,18 @@ uint16_t piu_MarginedLinear_input(piu_MarginedLinear* marginedLinear,
                                   uint16_t inputVal);
 uint16_t piu_MarginedLinear_output(piu_MarginedLinear* marginedLinear);
 
-uint16_t piu_MarginedLinear_updateOffPoint(piu_MarginedLinear* marginedLinear,
-                                           uint16_t newOffPoint);
-uint16_t piu_MarginedLinear_updateOnPoint(piu_MarginedLinear* marginedLinear,
-                                          uint16_t newOnPoint);
-uint16_t piu_MarginedLinear_updateLowLinearPoint(
-    piu_MarginedLinear* marginedLinear,
-    uint16_t newLowLinearPoint);
-uint16_t piu_MarginedLinear_updateHighLinearPoint(
-    piu_MarginedLinear* marginedLinear,
-    uint16_t newHighLinearPoint);
-uint16_t piu_MarginedLinear_updateStepUpPoint(piu_MarginedLinear* marginedLinear,
-                                              uint16_t newStepUpPoint);
-uint16_t piu_MarginedLinear_updateStepDownPoint(
-    piu_MarginedLinear* marginedLinear,
-    uint16_t newStepDownPoint);
-
-uint16_t piu_MarginedLinear_updateOffVal(piu_MarginedLinear* marginedLinear,
-                                         uint16_t newOffVal);
-uint16_t piu_MarginedLinear_updateLowFlatVal(piu_MarginedLinear* marginedLinear,
-                                             uint16_t newLowFlatVal);
-uint16_t piu_MarginedLinear_updateHighFlatVal(piu_MarginedLinear* marginedLinear,
-                                              uint16_t newHighFlatVal);
-uint16_t piu_MarginedLinear_updateMaxFlatVal(piu_MarginedLinear* marginedLinear,
-                                             uint16_t newMaxFlatVal);
+void piu_MarginedLinear_updatePoints(piu_MarginedLinear* marginedLinear,
+                                     uint16_t offPoint,
+                                     uint16_t onPoint,
+                                     uint16_t lowLinearPoint,
+                                     uint16_t highLinearPoint,
+                                     uint16_t stepUpPoint,
+                                     uint16_t stepDownPoint);
+void piu_MarginedLinear_updateVal(piu_MarginedLinear* marginedLinear,
+                                  uint16_t offVal,
+                                  uint16_t lowFlatVal,
+                                  uint16_t highFlatVal,
+                                  uint16_t maxFlatVal);
 
 
 #ifdef __cplusplus

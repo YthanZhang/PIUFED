@@ -42,8 +42,8 @@ static float calcLinear(uint16_t highFlatVal,
                         uint16_t highLinearPoint,
                         uint16_t lowLinearPoint)
 {
-    return (float)(highFlatVal - lowFlatVal) /
-           (float)(highLinearPoint - lowLinearPoint);
+    return ((float)highFlatVal - (float)lowFlatVal) /
+           ((float)highLinearPoint - (float)lowLinearPoint);
 }
 
 
@@ -53,8 +53,8 @@ piu_MarginedLinear* piu_MarginedLinear_construct(
     uint16_t onPoint,
     uint16_t lowLinearPoint,
     uint16_t highLinearPoint,
-    uint16_t stepUpPoint,
     uint16_t stepDownPoint,
+    uint16_t stepUpPoint,
     uint16_t offVal,
     uint16_t lowFlatVal,
     uint16_t highFlatVal,
@@ -62,23 +62,24 @@ piu_MarginedLinear* piu_MarginedLinear_construct(
 {
     marginedLinear->currentState = piu_MarginState_Off;
 
-    marginedLinear->offPoint        = offPoint;
-    marginedLinear->onPoint         = onPoint;
-    marginedLinear->lowLinearPoint  = lowLinearPoint;
-    marginedLinear->highLinearPoint = highLinearPoint;
-    marginedLinear->stepUpPoint     = stepUpPoint;
-    marginedLinear->stepDownPoint   = stepDownPoint;
-
-    marginedLinear->offVal      = offVal;
-    marginedLinear->lowFlatVal  = lowFlatVal;
-    marginedLinear->highFlatVal = highFlatVal;
-    marginedLinear->maxFlatVal  = maxFlatVal;
+    piu_MarginedLinear_updatePoints(marginedLinear,
+                                    offPoint,
+                                    onPoint,
+                                    lowLinearPoint,
+                                    highLinearPoint,
+                                    stepDownPoint,
+                                    stepUpPoint);
+    piu_MarginedLinear_updateVal(marginedLinear,
+                                 offVal,
+                                 lowFlatVal,
+                                 highFlatVal,
+                                 maxFlatVal);
 
     marginedLinear->linearRate =
         calcLinear(highFlatVal, lowFlatVal, highLinearPoint, lowLinearPoint);
 
     marginedLinear->lastInput = 0;
-    
+
     return marginedLinear;
 }
 
@@ -185,85 +186,65 @@ uint16_t piu_MarginedLinear_output(piu_MarginedLinear* marginedLinear)
     }
 }
 
-uint16_t piu_MarginedLinear_updateOffPoint(piu_MarginedLinear* marginedLinear,
-                                           uint16_t newOffPoint)
+void piu_MarginedLinear_updatePoints(piu_MarginedLinear* marginedLinear,
+                                     uint16_t offPoint,
+                                     uint16_t onPoint,
+                                     uint16_t lowLinearPoint,
+                                     uint16_t highLinearPoint,
+                                     uint16_t stepDownPoint,
+                                     uint16_t stepUpPoint)
 {
-    return marginedLinear->offPoint = newOffPoint;
-}
-uint16_t piu_MarginedLinear_updateOnPoint(piu_MarginedLinear* marginedLinear,
-                                          uint16_t newOnPoint)
-{
-    return marginedLinear->onPoint = newOnPoint;
-}
-uint16_t piu_MarginedLinear_updateLowLinearPoint(
-    piu_MarginedLinear* marginedLinear,
-    uint16_t newLowLinearPoint)
-{
-    marginedLinear->lowLinearPoint = newLowLinearPoint;
+    // Check and fix inversion, this struct/class/statemachine is only defined
+    // when these values are in this order:
+    // offPoint <= onPoint <= lowLinearPoint <= highLinearPoint <= stepDownPoint
+    // <= stepUpPoint
+    if (stepDownPoint > stepUpPoint)
+    {
+        stepDownPoint = stepUpPoint;
+    }
+    if (highLinearPoint > stepDownPoint)
+    {
+        highLinearPoint = stepDownPoint;
+    }
+    if (lowLinearPoint > highLinearPoint)
+    {
+        lowLinearPoint = highLinearPoint;
+    }
+    if (onPoint > lowLinearPoint)
+    {
+        onPoint = lowLinearPoint;
+    }
+    if (offPoint > onPoint)
+    {
+        offPoint = onPoint;
+    }
+
+    marginedLinear->offPoint        = offPoint;
+    marginedLinear->onPoint         = onPoint;
+    marginedLinear->lowLinearPoint  = lowLinearPoint;
+    marginedLinear->highLinearPoint = highLinearPoint;
+    marginedLinear->stepDownPoint   = stepDownPoint;
+    marginedLinear->stepUpPoint     = stepUpPoint;
 
     marginedLinear->linearRate = calcLinear(marginedLinear->highFlatVal,
                                             marginedLinear->lowFlatVal,
-                                            marginedLinear->highLinearPoint,
-                                            marginedLinear->lowLinearPoint);
-
-    return marginedLinear->lowLinearPoint;
-}
-uint16_t piu_MarginedLinear_updateHighLinearPoint(
-    piu_MarginedLinear* marginedLinear,
-    uint16_t newHighLinearPoint)
-{
-    marginedLinear->highLinearPoint = newHighLinearPoint;
-
-    marginedLinear->linearRate = calcLinear(marginedLinear->highFlatVal,
-                                            marginedLinear->lowFlatVal,
-                                            marginedLinear->highLinearPoint,
-                                            marginedLinear->lowLinearPoint);
-
-    return marginedLinear->highLinearPoint;
-}
-uint16_t piu_MarginedLinear_updateStepUpPoint(piu_MarginedLinear* marginedLinear,
-                                              uint16_t newStepUpPoint)
-{
-    return marginedLinear->stepUpPoint = newStepUpPoint;
-}
-uint16_t piu_MarginedLinear_updateStepDownPoint(
-    piu_MarginedLinear* marginedLinear,
-    uint16_t newStepDownPoint)
-{
-    return marginedLinear->stepDownPoint = newStepDownPoint;
+                                            highLinearPoint,
+                                            lowLinearPoint);
 }
 
-uint16_t piu_MarginedLinear_updateOffVal(piu_MarginedLinear* marginedLinear,
-                                         uint16_t newOffVal)
+void piu_MarginedLinear_updateVal(piu_MarginedLinear* marginedLinear,
+                                  uint16_t offVal,
+                                  uint16_t lowFlatVal,
+                                  uint16_t highFlatVal,
+                                  uint16_t maxFlatVal)
 {
-    return marginedLinear->offVal = newOffVal;
-}
-uint16_t piu_MarginedLinear_updateLowFlatVal(piu_MarginedLinear* marginedLinear,
-                                             uint16_t newLowFlatVal)
-{
-    marginedLinear->lowFlatVal = newLowFlatVal;
-    
-    marginedLinear->linearRate = calcLinear(marginedLinear->highFlatVal,
-                                            marginedLinear->lowFlatVal,
+    marginedLinear->offVal      = offVal;
+    marginedLinear->lowFlatVal  = lowFlatVal;
+    marginedLinear->highFlatVal = highFlatVal;
+    marginedLinear->maxFlatVal  = maxFlatVal;
+
+    marginedLinear->linearRate = calcLinear(highFlatVal,
+                                            lowFlatVal,
                                             marginedLinear->highLinearPoint,
                                             marginedLinear->lowLinearPoint);
-    
-    return marginedLinear->lowFlatVal;
-}
-uint16_t piu_MarginedLinear_updateHighFlatVal(piu_MarginedLinear* marginedLinear,
-                                              uint16_t newHighFlatVal)
-{
-    marginedLinear->highFlatVal = newHighFlatVal;
-    
-    marginedLinear->linearRate = calcLinear(marginedLinear->highFlatVal,
-                                            marginedLinear->lowFlatVal,
-                                            marginedLinear->highLinearPoint,
-                                            marginedLinear->lowLinearPoint);
-    
-    return marginedLinear->highFlatVal;
-}
-uint16_t piu_MarginedLinear_updateMaxFlatVal(piu_MarginedLinear* marginedLinear,
-                                             uint16_t newMaxFlatVal)
-{
-    return marginedLinear->maxFlatVal = newMaxFlatVal;
 }
