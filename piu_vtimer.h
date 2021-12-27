@@ -32,8 +32,8 @@
  ******************************************************************************/
 
 
-#ifndef PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_VTIMER_H
-#define PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_VTIMER_H
+#ifndef PIU_VTIMER_H
+#define PIU_VTIMER_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -221,4 +221,4 @@ bool piu_VTimer_clearOverOverflow(piu_VTimer* vTimer);
 }
 #endif
 
-#endif    // PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_VTIMER_H
+#endif    // PIU_VTIMER_H

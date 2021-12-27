@@ -69,8 +69,8 @@
 
 
 
-#ifndef PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_BUTTON_H
-#define PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_BUTTON_H
+#ifndef PIU_BUTTON_H
+#define PIU_BUTTON_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -153,4 +153,4 @@ uint16_t piu_Button_setStableThreshold(piu_Button* buttonStruct,
 }
 #endif
 
-#endif    // PLATFORM_INDEPENDENT_UTILS_FOR_EMBEDDED_DEVELOPMENT_PIU_BUTTON_H
+#endif    // PIU_BUTTON_H
