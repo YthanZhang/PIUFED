@@ -17,7 +17,7 @@ add_subdirectory({PATH_TO_PIUFED}/PIUFED)
 ```
 
 Then add this line after your `add_executable({TARGET_NAME} ${PROJECT_FILES})`
-line, replace `{TARGET_NAME}` with your actual project name
+line, replace `{TARGET_NAME}` with your actual target name
 
 ```cmake
 target_link_libraries({TARGET_NAME} PRIVATE PIUFED)
