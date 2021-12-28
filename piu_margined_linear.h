@@ -98,8 +98,8 @@ void piu_MarginedLinear_updatePoints(piu_MarginedLinear* marginedLinear,
                                      uint16_t onPoint,
                                      uint16_t lowLinearPoint,
                                      uint16_t highLinearPoint,
-                                     uint16_t stepUpPoint,
-                                     uint16_t stepDownPoint);
+                                     uint16_t stepDownPoint,
+                                     uint16_t stepUpPoint);
 void piu_MarginedLinear_updateVal(piu_MarginedLinear* marginedLinear,
                                   uint16_t offVal,
                                   uint16_t lowFlatVal,

@@ -60,8 +60,6 @@ piu_MarginedLinear* piu_MarginedLinear_construct(
     uint16_t highFlatVal,
     uint16_t maxFlatVal)
 {
-    marginedLinear->currentState = piu_MarginState_Off;
-
     piu_MarginedLinear_updatePoints(marginedLinear,
                                     offPoint,
                                     onPoint,
@@ -74,9 +72,6 @@ piu_MarginedLinear* piu_MarginedLinear_construct(
                                  lowFlatVal,
                                  highFlatVal,
                                  maxFlatVal);
-
-    marginedLinear->linearRate =
-        calcLinear(highFlatVal, lowFlatVal, highLinearPoint, lowLinearPoint);
 
     marginedLinear->lastInput = 0;
 
@@ -171,7 +166,8 @@ uint16_t piu_MarginedLinear_output(piu_MarginedLinear* marginedLinear)
     }
     case (piu_MarginState_Linear): {
         return (uint16_t)((marginedLinear->linearRate *
-                           (float)marginedLinear->lastInput) +
+                           (float)(marginedLinear->lastInput -
+                                   marginedLinear->lowLinearPoint)) +
                           (float)marginedLinear->lowFlatVal);
     }
     case (piu_MarginState_HighFlat): {
@@ -194,6 +190,8 @@ void piu_MarginedLinear_updatePoints(piu_MarginedLinear* marginedLinear,
                                      uint16_t stepDownPoint,
                                      uint16_t stepUpPoint)
 {
+    marginedLinear->currentState = piu_MarginState_Off;
+    
     // Check and fix inversion, this struct/class/statemachine is only defined
     // when these values are in this order:
     // offPoint <= onPoint <= lowLinearPoint <= highLinearPoint <= stepDownPoint
