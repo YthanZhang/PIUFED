@@ -35,23 +35,13 @@
 #include "piu_sim_uart.h"
 
 
-uint8_t simRxBuffer = 0;
-uint8_t simTxBuffer = 0;
 
-
-static uint8_t rxCounter = 0;
-static uint8_t txCounter = 0;
-
-bool flag_rxComplete = false;
-bool flag_txComplete = false;
-
-
-void txSendBit(void (*setTxFunc)(bool))
+static void txSendBit(piu_SimUART* simUART)
 {
-    switch (txCounter)
+    switch (simUART->txCounter)
     {
     case (0): {    // Start bit
-        setTxFunc(0);
+        simUART->setTxFunc(0);
         break;
     }
     case (1):    // Data bits
@@ -62,35 +52,35 @@ void txSendBit(void (*setTxFunc)(bool))
     case (6):
     case (7):
     case (8): {
-        setTxFunc(0x01 & simTxBuffer);
-        simTxBuffer = simTxBuffer >> 1;
+        simUART->setTxFunc(0x01 & simUART->txBuffer);
+        simUART->txBuffer = simUART->txBuffer >> 1;
         break;
     }
     case (9): {    // Stop bit
-        setTxFunc(1);
+        simUART->setTxFunc(1);
         break;
     }
     case (10): {    // Stop bit and set flag
-        setTxFunc(1);
-        flag_txComplete = true;
+        simUART->setTxFunc(1);
+        simUART->flag_txComplete = true;
         break;
     }
     default:    // no tx required;
         return;
     }
 
-    ++txCounter;
+    ++(simUART->txCounter);
 }
 
-void rxReceiveBit(bool rxVal)
+static void rxReceiveBit(piu_SimUART* simUART, bool rxVal)
 {
-    switch (rxCounter)
+    switch (simUART->rxCounter)
     {
     case (0): {    // Check start bit
         if (rxVal)
         {
             // move rx counter to default to stop receive
-            rxCounter = 8;
+            simUART->rxCounter = 10;
         }
         break;
     }
@@ -100,51 +90,94 @@ void rxReceiveBit(bool rxVal)
     case (4):
     case (5):
     case (6):
-    case (7): {
-        simRxBuffer = (simRxBuffer << 1) | rxVal;
-        break;
-    }
+    case (7):
     case (8): {
-        simRxBuffer     = (simRxBuffer << 1) | rxVal;
-        flag_rxComplete = true;
+        simUART->rxBuffer = simUART->rxBuffer |
+                               (rxVal << (simUART->rxCounter - 1));
         break;
     }
+    case (9):
+        if (!rxVal)
+        {
+            simUART->rxCounter         = 10;
+            simUART->flag_rxFrameError = true;
+        }
+    case (10):
+        if (rxVal)
+        {
+            simUART->flag_rxComplete   = true;
+            simUART->flag_rxFrameError = false;
+        }
     default: {
         return;
     }
     }
 
-    ++rxCounter;
+    ++(simUART->rxCounter);
 }
 
 
-bool simUART_GPIOUpdate(bool rxVal)
+piu_SimUART* piu_SimUART_construct(piu_SimUART* simUART,
+                                   void (*setTxFunc)(bool))
+{
+    simUART->rxCounter = 11;
+    simUART->txCounter = 11;
+    
+    simUART->flag_rxFrameError = false;
+    simUART->flag_rxComplete = false;
+    simUART->flag_txComplete = false;
+    
+    simUART->rxBuffer    = 0;
+    simUART->txBuffer    = 0;
+    
+    simUART->setTxFunc = setTxFunc;
+    
+    return simUART;
+}
+
+
+bool piu_SimUART_GPIOUpdate(piu_SimUART* simUART, bool rxVal)
 {
     if (rxVal == 0)
     {
-        rxCounter = 0;
+        simUART->rxCounter = 0;
     }
     else
     {
         return false;
     }
 
-    rxReceiveBit(0);
+    rxReceiveBit(simUART, rxVal);
 
-    return rxCounter <= 8;
+    return simUART->rxCounter <= 9;
 }
 
 
-bool simUART_TIMUpdate(bool rxVal, void (*setTxFunc)(bool))
+bool piu_SimUART_TIMUpdate(piu_SimUART* simUART,
+                           bool rxVal)
 {
-    if (rxCounter <= 8)
+    if (simUART->rxCounter <= 9)
     {
-        rxReceiveBit(0);
+        rxReceiveBit(simUART, rxVal);
     }
-    if (txCounter <= 10)
+    if (simUART->txCounter <= 10)
     {
-        txSendBit(setTxFunc);
+        txSendBit(simUART);
     }
 
-    return rxCounter <= 8 || txCounter <= 10;
+    return simUART->rxCounter <= 9 || simUART->txCounter <= 10;
+}
+
+
+uint8_t piu_SimUART_getRx(piu_SimUART* simUART)
+{
+    simUART->flag_rxComplete = false;
+    return simUART->rxBuffer;
+}
+
+void piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val)
+{
+    simUART->flag_txComplete = false;
+    simUART->txBuffer    = val;
+    simUART->txCounter   = 0;
 }

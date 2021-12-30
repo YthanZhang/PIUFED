@@ -40,19 +40,35 @@ extern "C" {
 #endif
 
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 
-extern uint8_t simRxBuffer;
-extern uint8_t simTxBuffer;
+typedef struct piu_struct_SimUART
+{
+    bool flag_rxComplete;
+    bool flag_txComplete;
 
-extern bool flag_rxComplete;
-extern bool flag_txComplete;
+    bool flag_rxFrameError;
+
+    uint8_t rxBuffer;
+    uint8_t txBuffer;
+
+    uint8_t rxCounter;
+    uint8_t txCounter;
+
+    void (*setTxFunc)(bool txVal);
+} piu_SimUART;
 
 
-bool simUART_TIMUpdate(bool rxVal, void (*txVal)(bool));
-bool simUART_GPIOUpdate(bool rxVal);
+piu_SimUART* piu_SimUART_construct(piu_SimUART* simUART,
+                                   void (*setTxFunc)(bool));
+
+bool piu_SimUART_TIMUpdate(piu_SimUART* simUART, bool rxVal);
+bool piu_SimUART_GPIOUpdate(piu_SimUART* simUART, bool rxVal);
+
+uint8_t piu_SimUART_getRx(piu_SimUART* simUART);
+void piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val);
 
 
 #ifdef __cplusplus
