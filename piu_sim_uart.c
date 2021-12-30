@@ -35,6 +35,9 @@
 #include "piu_sim_uart.h"
 
 
+#define RX_COUNT_MAX 10
+#define TX_COUNT_MAX 10
+
 
 static void txSendBit(piu_SimUART* simUART)
 {
@@ -80,7 +83,7 @@ static void rxReceiveBit(piu_SimUART* simUART, bool rxVal)
         if (rxVal)
         {
             // move rx counter to default to stop receive
-            simUART->rxCounter = 10;
+            simUART->rxCounter = RX_COUNT_MAX + 1;
         }
         break;
     }
@@ -93,21 +96,24 @@ static void rxReceiveBit(piu_SimUART* simUART, bool rxVal)
     case (7):
     case (8): {
         simUART->rxBuffer = simUART->rxBuffer |
-                               (rxVal << (simUART->rxCounter - 1));
+                            (rxVal << (simUART->rxCounter - 1));
         break;
     }
     case (9):
         if (!rxVal)
         {
-            simUART->rxCounter         = 10;
+            simUART->rxCounter         = RX_COUNT_MAX + 1;
             simUART->flag_rxFrameError = true;
+            return;
         }
+        break;
     case (10):
         if (rxVal)
         {
             simUART->flag_rxComplete   = true;
             simUART->flag_rxFrameError = false;
         }
+        break;
     default: {
         return;
     }
@@ -117,21 +123,20 @@ static void rxReceiveBit(piu_SimUART* simUART, bool rxVal)
 }
 
 
-piu_SimUART* piu_SimUART_construct(piu_SimUART* simUART,
-                                   void (*setTxFunc)(bool))
+piu_SimUART* piu_SimUART_construct(piu_SimUART* simUART, void (*setTxFunc)(bool))
 {
-    simUART->rxCounter = 11;
-    simUART->txCounter = 11;
-    
+    simUART->rxCounter = RX_COUNT_MAX + 1;
+    simUART->txCounter = TX_COUNT_MAX + 1;
+
     simUART->flag_rxFrameError = false;
-    simUART->flag_rxComplete = false;
-    simUART->flag_txComplete = false;
-    
-    simUART->rxBuffer    = 0;
-    simUART->txBuffer    = 0;
-    
+    simUART->flag_rxComplete   = false;
+    simUART->flag_txComplete   = false;
+
+    simUART->rxBuffer = 0;
+    simUART->txBuffer = 0;
+
     simUART->setTxFunc = setTxFunc;
-    
+
     return simUART;
 }
 
@@ -149,23 +154,23 @@ bool piu_SimUART_GPIOUpdate(piu_SimUART* simUART, bool rxVal)
 
     rxReceiveBit(simUART, rxVal);
 
-    return simUART->rxCounter <= 9;
+    return simUART->rxCounter <= RX_COUNT_MAX;
 }
 
 
-bool piu_SimUART_TIMUpdate(piu_SimUART* simUART,
-                           bool rxVal)
+bool piu_SimUART_TIMUpdate(piu_SimUART* simUART, bool rxVal)
 {
-    if (simUART->rxCounter <= 9)
+    if (simUART->rxCounter <= RX_COUNT_MAX)
     {
         rxReceiveBit(simUART, rxVal);
     }
-    if (simUART->txCounter <= 10)
+    if (simUART->txCounter <= TX_COUNT_MAX)
     {
         txSendBit(simUART);
     }
 
-    return simUART->rxCounter <= 9 || simUART->txCounter <= 10;
+    return simUART->rxCounter <= RX_COUNT_MAX ||
+           simUART->txCounter <= TX_COUNT_MAX;
 }
 
 
@@ -178,6 +183,6 @@ uint8_t piu_SimUART_getRx(piu_SimUART* simUART)
 void piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val)
 {
     simUART->flag_txComplete = false;
-    simUART->txBuffer    = val;
-    simUART->txCounter   = 0;
+    simUART->txBuffer        = val;
+    simUART->txCounter       = 0;
 }
