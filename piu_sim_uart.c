@@ -193,9 +193,14 @@ uint8_t piu_SimUART_getRx(piu_SimUART* simUART)
     }
 }
 
-void piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val)
+bool piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val)
 {
-    simUART->flag_txComplete = false;
-    simUART->txBuffer        = val;
-    simUART->txCounter       = 0;
+    if (simUART->flag_txComplete)
+    {
+        simUART->flag_txComplete = false;
+        simUART->txBuffer        = val;
+        simUART->txCounter       = 0;
+        return true;
+    }
+    return false;
 }

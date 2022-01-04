@@ -150,8 +150,10 @@ uint8_t piu_SimUART_getRx(piu_SimUART* simUART);
  * @note Must enable timer & timer interrupt for data to actually be sent
  * @param simUART Pointer to a piu_SimUART struct
  * @param val The 8 bits of data to send
+ * @return <b>true</b> if data is set, <b>false</b> if the previous tx has not
+ *      finished and the new value could not be sent
  */
-void piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val);
+bool piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val);
 
 
 #ifdef __cplusplus
