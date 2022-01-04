@@ -96,7 +96,7 @@ typedef struct piu_struct_SimUART
     bool flag_rxComplete;
     bool flag_txComplete;
 
-    bool flag_rxFrameError;
+    bool flag_rxFrameErr;
 
     uint8_t rxBuffer;
     uint8_t txBuffer;
@@ -138,7 +138,7 @@ bool piu_SimUART_GPIOUpdate(piu_SimUART* simUART, bool rxVal);
 
 /**
  * @brief Get the latest rx result
- * @note Return value is invalid if @p flag_rxFrameError is <b>true</b>
+ * @note Return value is invalid if @p flag_rxFrameErr is <b>true</b>
  * @note Trying to read rx when rx complete is not true may result in invalid
  *      result
  * @param simUART Pointer to a piu_SimUART struct
@@ -155,8 +155,25 @@ uint8_t piu_SimUART_getRx(piu_SimUART* simUART);
  */
 bool piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val);
 
+/**
+ * @brief Get if the latest rx has completed and has not yet been retrieved
+ * @param simUART Pointer to a piu_SimUART struct
+ * @return <b>true</b> if the latest rx has completed and has not yet been
+ *      retrieved, <b>false</b> otherwise
+ */
 bool piu_SimUART_getRxComplete(piu_SimUART* simUART);
+/**
+ * @brief Get if the latest tx has completed
+ * @param simUART Pointer to a piu_SimUART struct
+ * @return <b>true</b> if the latest tx has completed, <b>false</b> otherwise
+ */
 bool piu_SimUART_getTxComplete(piu_SimUART* simUART);
+/**
+ * @brief Get if the latest rx attempt has ended in error
+ * @param simUART Pointer to a pui_SimUART struct
+ * @return <b>true</b> if the latest rx attempt has ended in error, <b>false</b>
+ * otherwise
+ */
 bool piu_SimUART_getRxFrameErr(piu_SimUART* simUART);
 
 
