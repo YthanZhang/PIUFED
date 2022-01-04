@@ -82,13 +82,14 @@ static void rxReceiveBit(piu_SimUART* simUART, bool rxVal)
     case (0): {    // Check start bit
         if (rxVal)
         {
-            // move rx counter to default to stop receive
+            // move rx counter to default + 1 to stop receive
             simUART->rxCounter = RX_COUNT_MAX + 1;
         }
         else
         {
             // else start service, reset rx buffer
-            simUART->rxBuffer = 0;
+            simUART->flag_rxComplete = false;
+            simUART->rxBuffer        = 0;
         }
         break;
     }
@@ -104,19 +105,19 @@ static void rxReceiveBit(piu_SimUART* simUART, bool rxVal)
                             (rxVal << (simUART->rxCounter - 1));
         break;
     }
-    case (9):
-        if (!rxVal)
-        {
-            simUART->rxCounter         = RX_COUNT_MAX + 1;
-            simUART->flag_rxFrameError = true;
-            return;
-        }
-        break;
     case (10):
-        if (rxVal)
+        if (rxVal)  // stop bit 2 correct
         {
             simUART->flag_rxComplete   = true;
             simUART->flag_rxFrameError = false;
+        }
+        // no break
+    case (9):
+        if (!rxVal) // stop bit 1 or 2 incorrect
+        {
+            simUART->rxCounter         = RX_COUNT_MAX + 1;
+            simUART->flag_rxFrameError = true;
+            simUART->flag_rxComplete   = false;
         }
         break;
     default: {
@@ -182,15 +183,12 @@ bool piu_SimUART_TIMUpdate(piu_SimUART* simUART, bool rxVal)
 
 uint8_t piu_SimUART_getRx(piu_SimUART* simUART)
 {
-    if (simUART->rxCounter <= RX_COUNT_MAX)
+    if(simUART->flag_rxFrameError)
     {
         return 0;
     }
-    else
-    {
-        simUART->flag_rxComplete = false;
-        return simUART->rxBuffer;
-    }
+    simUART->flag_rxComplete = false;
+    return simUART->rxBuffer;
 }
 
 bool piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val)
