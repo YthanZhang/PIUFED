@@ -204,3 +204,17 @@ bool piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val)
     }
     return false;
 }
+
+
+bool piu_SimUART_getRxComplete(piu_SimUART* simUART)
+{
+    return simUART->flag_rxComplete;
+}
+bool piu_SimUART_getTxComplete(piu_SimUART* simUART)
+{
+    return simUART->flag_txComplete;
+}
+bool piu_SimUART_getRxFrameErr(piu_SimUART* simUART)
+{
+    return simUART->flag_rxFrameError;
+}

@@ -155,6 +155,10 @@ uint8_t piu_SimUART_getRx(piu_SimUART* simUART);
  */
 bool piu_SimUART_sendTx(piu_SimUART* simUART, uint8_t val);
 
+bool piu_SimUART_getRxComplete(piu_SimUART* simUART);
+bool piu_SimUART_getTxComplete(piu_SimUART* simUART);
+bool piu_SimUART_getRxFrameErr(piu_SimUART* simUART);
+
 
 #ifdef __cplusplus
 }
