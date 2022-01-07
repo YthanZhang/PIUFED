@@ -36,5 +36,5 @@ add_library(PIUFED
     piu_vtimer.c
     piu_margined_linear.c
     piu_sim_uart.c
-)
+        piu_modbus_crc16.c piu_modbus_crc16.h)
 
