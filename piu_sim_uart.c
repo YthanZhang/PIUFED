@@ -137,7 +137,7 @@ piu_SimUART* piu_SimUART_construct(piu_SimUART* simUART,
 
     simUART->flag_rxFrameErr   = false;
     simUART->flag_rxComplete   = false;
-    simUART->flag_txComplete   = false;
+    simUART->flag_txComplete   = true;
 
     simUART->rxBuffer = 0;
     simUART->txBuffer = 0;
