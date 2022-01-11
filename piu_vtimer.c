@@ -59,11 +59,8 @@ void piu_VTimer_tick(piu_VTimer* vTimer)
 {
     // only tick if counter is active
     if (!vTimer->flag_counterActive)
-    {
-        return;
-    }
-
-    if (vTimer->counter >= vTimer->counterReloadValue)
+        ;
+    else if (vTimer->counter >= vTimer->counterReloadValue)
     {
         if (vTimer->flag_overflow)
         {
@@ -72,15 +69,17 @@ void piu_VTimer_tick(piu_VTimer* vTimer)
         vTimer->flag_overflow = true;
 
         vTimer->flag_counterActive = (vTimer->timerMode != piu_VTMode_OneShot);
-        vTimer->counter = 0;
+        vTimer->counter            = 0;
 
         if (vTimer->callback != NULL)
         {
             vTimer->callback();
         }
     }
-
-    ++(vTimer->counter);
+    else
+    {
+        ++(vTimer->counter);
+    }
 }
 
 
