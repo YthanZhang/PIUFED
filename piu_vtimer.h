@@ -67,7 +67,6 @@ typedef struct piu_struct_VTimer
 
     uint16_t counterReloadValue;
     uint16_t counter;
-    piu_VTCDir countDirection;
 
     bool flag_overflow;
     bool flag_overOverflow;
@@ -78,8 +77,8 @@ typedef struct piu_struct_VTimer
 /**
  * @brief Use this function to initialized a piu_VTimer struct
  * @param vTimer Pointer to an uninitialized piu_VTimer struct
- * @param counterReloadValue The reload value the timer counter will be set to
- *      on counter overflow or on manual counter reload
+ * @param counterReloadValue A counter reload is triggered when the counter
+ *      reaches this value
  * @param counterDirection The direction counter should go, see piu_VTCDir
  * @param timerMode Should timer stop after one overflow or be continuous, see
  *      piu_VTMode
@@ -89,7 +88,6 @@ typedef struct piu_struct_VTimer
  */
 piu_VTimer* piu_VTimer_construct(piu_VTimer* vTimer,
                                  uint16_t counterReloadValue,
-                                 piu_VTCDir counterDirection,
                                  piu_VTMode timerMode,
                                  void (*callbackFunc)(void));
 
@@ -102,6 +100,8 @@ void piu_VTimer_tick(piu_VTimer* vTimer);
 
 /**
  * @brief Use this function to set new counter reload value
+ * @note Counter will reload on reaching this value, the reset value will always
+ *      be 0
  * @note The counter reload value can be changed at any time, even when the
  *      counter is active
  * @param vTimer piu_VTimer struct
@@ -110,18 +110,6 @@ void piu_VTimer_tick(piu_VTimer* vTimer);
  */
 uint16_t piu_VTimer_setCounterReloadValue(piu_VTimer* vTimer,
                                           uint16_t counterReloadValue);
-/**
- * @brief Use this function to set counter direction
- * @warning A new value can only be set when counter is not active. If called
- *      when counter is active, the count direction will <b>NOT</b> change and
- *      the original count direction will be returned
- * @warning When a new direction is set, the counter value will reload
- * @param vTimer Pointer to a piu_VTimer struct
- * @param countDirection New count direction
- * @return The count direction
- */
-piu_VTCDir piu_VTimer_setCountDirection(piu_VTimer* vTimer,
-                                        piu_VTCDir countDirection);
 /**
  * @brief Use this function to set time to be in one shot mode or in continuous
  *      mode
@@ -162,7 +150,7 @@ uint16_t piu_VTimer_stopCounter(piu_VTimer* vTimer);
  * @param vTimer Pointer to a piu_VTimer struct
  * @return The counter reload value
  */
-uint16_t piu_VTimer_reloadCounter(piu_VTimer* vTimer);
+uint16_t piu_VTimer_resetCounter(piu_VTimer* vTimer);
 /**
  * @brief Get the current counter value
  * @param vTimer Pointer to a piu_VTimer struct
@@ -175,12 +163,6 @@ uint16_t piu_VTimer_getCounter(piu_VTimer* vTimer);
  * @return The counter reload value
  */
 uint16_t piu_VTimer_getCounterReloadValue(piu_VTimer* vTimer);
-/**
- * @brief Get count direction
- * @param vTimer Pointer to a piu_VTimer struct
- * @return The count direction
- */
-piu_VTCDir piu_VTimer_getCountDirection(piu_VTimer* vTimer);
 
 /**
  * @brief Get overflow flag

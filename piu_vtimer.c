@@ -37,13 +37,11 @@
 
 piu_VTimer* piu_VTimer_construct(piu_VTimer* vTimer,
                                  uint16_t counterReloadValue,
-                                 piu_VTCDir counterDirection,
                                  piu_VTMode timerMode,
                                  void (*callbackFunc)(void))
 {
-    vTimer->counter            = counterReloadValue;
+    vTimer->counter            = 0;
     vTimer->counterReloadValue = counterReloadValue;
-    vTimer->countDirection     = counterDirection;
 
     vTimer->timerMode = timerMode;
 
@@ -65,22 +63,7 @@ void piu_VTimer_tick(piu_VTimer* vTimer)
         return;
     }
 
-    uint16_t oldCount = vTimer->counter;
-    bool overflow     = false;
-    if (vTimer->countDirection == piu_VTCDir_Up)
-    {
-        ++(vTimer->counter);
-        // If less than old count, an overflow happened
-        overflow = vTimer->counter < oldCount;
-    }
-    else if (vTimer->countDirection == piu_VTCDir_Down)
-    {
-        --(vTimer->counter);
-        // If greater than old count, an overflow happened
-        overflow = vTimer->counter > oldCount;
-    }
-
-    if (overflow)
+    if (vTimer->counter >= vTimer->counterReloadValue)
     {
         if (vTimer->flag_overflow)
         {
@@ -88,18 +71,16 @@ void piu_VTimer_tick(piu_VTimer* vTimer)
         }
         vTimer->flag_overflow = true;
 
-        vTimer->counter = vTimer->counterReloadValue;
-        
-        if (vTimer->timerMode == piu_VTMode_OneShot)
-        {
-            vTimer->flag_counterActive = false;
-        }
-        
-        if(vTimer->callback != NULL)
+        vTimer->flag_counterActive = (vTimer->timerMode != piu_VTMode_OneShot);
+        vTimer->counter = 0;
+
+        if (vTimer->callback != NULL)
         {
             vTimer->callback();
         }
     }
+
+    ++(vTimer->counter);
 }
 
 
@@ -109,19 +90,6 @@ uint16_t piu_VTimer_setCounterReloadValue(piu_VTimer* vTimer,
     return vTimer->counterReloadValue = counterReloadValue;
 }
 
-piu_VTCDir piu_VTimer_setCountDirection(piu_VTimer* vTimer,
-                                        piu_VTCDir countDirection)
-{
-    if(!vTimer->flag_counterActive)
-    {
-        vTimer->countDirection = countDirection;
-
-        piu_VTimer_reloadCounter(vTimer);
-    }
-    
-    return vTimer->countDirection;
-}
-
 piu_VTMode piu_VTimer_setTimerMode(piu_VTimer* vTimer, piu_VTMode timerMode)
 {
     return vTimer->timerMode = timerMode;
@@ -129,7 +97,7 @@ piu_VTMode piu_VTimer_setTimerMode(piu_VTimer* vTimer, piu_VTMode timerMode)
 
 void piu_VTimer_setCallback(piu_VTimer* vTimer, void (*callbackFunc)(void))
 {
-    if(!vTimer->flag_counterActive)
+    if (!vTimer->flag_counterActive)
     {
         vTimer->callback = callbackFunc;
     }
@@ -138,7 +106,7 @@ void piu_VTimer_setCallback(piu_VTimer* vTimer, void (*callbackFunc)(void))
 
 uint16_t piu_VTimer_startCounter(piu_VTimer* vTimer)
 {
-    uint16_t counter = vTimer->counter;
+    uint16_t counter           = vTimer->counter;
     vTimer->flag_counterActive = true;
     return counter;
 }
@@ -149,30 +117,22 @@ uint16_t piu_VTimer_stopCounter(piu_VTimer* vTimer)
     return vTimer->counter;
 }
 
-uint16_t piu_VTimer_reloadCounter(piu_VTimer* vTimer)
+uint16_t piu_VTimer_resetCounter(piu_VTimer* vTimer)
 {
-    return vTimer->counter = vTimer->counterReloadValue;
+    return vTimer->counter = 0;
 }
 
-uint16_t piu_VTimer_getCounter(piu_VTimer* vTimer)
-{
-    return vTimer->counter;
-}
+uint16_t piu_VTimer_getCounter(piu_VTimer* vTimer) { return vTimer->counter; }
 
 uint16_t piu_VTimer_getCounterReloadValue(piu_VTimer* vTimer)
 {
     return vTimer->counterReloadValue;
 }
 
-piu_VTCDir piu_VTimer_getCountDirection(piu_VTimer* vTimer)
-{
-    return vTimer->countDirection;
-}
-
 
 bool piu_VTimer_getOverflow(piu_VTimer* vTimer)
 {
-    bool flag = vTimer->flag_overflow;
+    bool flag             = vTimer->flag_overflow;
     vTimer->flag_overflow = false;
     return flag;
 }
@@ -190,7 +150,7 @@ bool piu_VTimer_getCounterActive(piu_VTimer* vTimer)
 
 bool piu_VTimer_clearOverOverflow(piu_VTimer* vTimer)
 {
-    bool flag = vTimer->flag_overOverflow;
+    bool flag                 = vTimer->flag_overOverflow;
     vTimer->flag_overOverflow = false;
     return flag;
 }
