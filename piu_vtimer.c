@@ -40,12 +40,13 @@ piu_VTimer* piu_VTimer_construct(piu_VTimer* vTimer,
                                  piu_VTMode timerMode,
                                  void (*callbackFunc)(void))
 {
-    vTimer->counter            = 0;
     vTimer->counterReloadValue = counterReloadValue;
 
     vTimer->timerMode = timerMode;
 
     vTimer->callback = callbackFunc;
+
+    vTimer->counter = 0;
 
     vTimer->flag_overflow      = false;
     vTimer->flag_overOverflow  = false;

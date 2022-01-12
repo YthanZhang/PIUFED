@@ -61,11 +61,12 @@ typedef enum piu_enum_VTCDir
 
 typedef struct piu_struct_VTimer
 {
-    void (*callback)(void);
+    uint16_t counterReloadValue;
 
     piu_VTMode timerMode;
 
-    uint16_t counterReloadValue;
+    void (*callback)(void);
+
     uint16_t counter;
 
     bool flag_overflow;
@@ -75,7 +76,28 @@ typedef struct piu_struct_VTimer
 
 
 /**
+ * @brief Use this macro to create a piu_VTimer struct
+ * @note A piu_VTimer struct created with this macro doesn't need to call
+ *      <b>piu_VTimer_construct</b>
+ * @param counterReloadValue A counter reload is triggered when the counter
+ *      reaches this value
+ * @param counterDirection The direction counter should go, see piu_VTCDir
+ * @param timerMode Should timer stop after one overflow or be continuous, see
+ *      piu_VTMode
+ * @param callbackFunc The callback function piu_VTimer_tick will call on
+ *      overflow event, set to @p NULL for no callback
+ * @return Pointer to the same piu_VTimer struct passed in
+ */
+#define PIU_VTIMER_MAKE(COUNTER_RELOAD_VALUE, TIMER_MODE, CALLBACK_FUNC)       \
+    {                                                                          \
+        (COUNTER_RELOAD_VALUE), (TIMER_MODE), (CALLBACK_FUNC), 0, false,       \
+            false, false,                                                      \
+    }
+
+/**
  * @brief Use this function to initialized a piu_VTimer struct
+ * @note Only need to call this function if the struct was not created with
+ *      <b>PIU_VTIMER_MAKE</b>
  * @param vTimer Pointer to an uninitialized piu_VTimer struct
  * @param counterReloadValue A counter reload is triggered when the counter
  *      reaches this value
