@@ -91,6 +91,10 @@ extern "C" {
 #include <stdint.h>
 
 
+#define PIU_SIM_UART_RX_COUNT_MAX 10
+#define PIU_SIM_UART_TX_COUNT_MAX 10
+
+
 typedef struct piu_struct_SimUART
 {
     bool flag_rxComplete;
@@ -109,10 +113,27 @@ typedef struct piu_struct_SimUART
 
 
 /**
+ * @brief Use this macro to create a piu_SimUART struct
+ * @note A piu_SimUART struct created with this macro doesn't need to call
+ *      <b>piu_SimUART_construct</b>
+ * @param SET_TX_FUNC A function pointer to a function that sets the Tx pin's
+ *      high/low.@n
+ *      This function should takes on boolean argument.@n
+ *      The function pointer must <b>NOT</b> be @p NULL
+ */
+#define PIU_SIM_UART_MAKE(SET_TX_FUNC)                                         \
+    {                                                                          \
+        false, true, false, 0, 0, PIU_SIM_UART_RX_COUNT_MAX,                   \
+            PIU_SIM_UART_TX_COUNT_MAX, SET_TX_FUNC                             \
+    }
+
+/**
  * @brief Call this function to initialized a piu_SimUART struct
  * @param simUART Pointer to an uninitialized piu_SimUART struct
- * @param setTxFunc Function pointer to a function that sets the Tx pin's
- *      high/low
+ * @param setTxFunc A function pointer to a function that sets the Tx pin's
+ *      high/low.@n
+ *      This function should takes on boolean argument.@n
+ *      The function pointer must <b>NOT</b> be @p NULL
  * @return Pointer to the same piu_SimUART struct passed in
  */
 piu_SimUART* piu_SimUART_construct(piu_SimUART* simUART,

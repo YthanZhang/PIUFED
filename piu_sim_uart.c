@@ -35,8 +35,8 @@
 #include "piu_sim_uart.h"
 
 
-#define RX_COUNT_MAX 10
-#define TX_COUNT_MAX 10
+#define RX_COUNT_MAX PIU_SIM_UART_RX_COUNT_MAX
+#define TX_COUNT_MAX PIU_SIM_UART_TX_COUNT_MAX
 
 
 static void txSendBit(piu_SimUART* simUART)
