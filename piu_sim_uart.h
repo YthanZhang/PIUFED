@@ -91,7 +91,7 @@ extern "C" {
 #include <stdint.h>
 
 
-#define PIU_SIM_UART_RX_COUNT_MAX 10
+#define PIU_SIM_UART_RX_COUNT_MAX 9
 #define PIU_SIM_UART_TX_COUNT_MAX 10
 
 

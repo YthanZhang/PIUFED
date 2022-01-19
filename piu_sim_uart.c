@@ -105,20 +105,18 @@ static void rxReceiveBit(piu_SimUART* simUART, bool rxVal)
                             (rxVal << (simUART->rxCounter - 1));
         break;
     }
-    case (10):
-        if (rxVal)    // stop bit 2 correct
+    case (9):
+        if (rxVal)    // stop-bit correct
         {
             simUART->flag_rxComplete = true;
             simUART->flag_rxFrameErr = false;
         }
-        else    // stop bit 2 incorrect
+        else    // stop-bit incorrect
         {
             simUART->rxCounter       = RX_COUNT_MAX + 1;
             simUART->flag_rxFrameErr = true;
             simUART->flag_rxComplete = false;
         }
-        break;
-    case (9):
         break;
     default: {
         return;
