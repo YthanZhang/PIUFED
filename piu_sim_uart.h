@@ -123,8 +123,8 @@ typedef struct piu_struct_SimUART
  */
 #define PIU_SIM_UART_MAKE(SET_TX_FUNC)                                         \
     {                                                                          \
-        false, true, false, 0, 0, PIU_SIM_UART_RX_COUNT_MAX,                   \
-            PIU_SIM_UART_TX_COUNT_MAX, (SET_TX_FUNC)                           \
+        false, true, false, 0, 0, PIU_SIM_UART_RX_COUNT_MAX + 1,               \
+            PIU_SIM_UART_TX_COUNT_MAX + 1, (SET_TX_FUNC)                       \
     }
 
 /**
