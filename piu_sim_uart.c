@@ -178,6 +178,25 @@ bool piu_SimUART_halfDuplexTIMUpdate(piu_SimUART* simUART, bool rxVal)
 }
 
 
+bool piu_SimUART_rxTIMUpdate(piu_SimUART* simUART, bool rxVal)
+{
+    if (simUART->rxCounter <= RX_COUNT_MAX)
+    {
+        rxReceiveBit(simUART, rxVal);
+    }
+    return simUART->rxCounter <= RX_COUNT_MAX;
+}
+
+bool piu_SimUART_txTIMUpdate(piu_SimUART* simUART)
+{
+    if (simUART->txCounter <= TX_COUNT_MAX)
+    {
+        txSendBit(simUART);
+    }
+    return simUART->txCounter <= TX_COUNT_MAX;
+}
+
+
 uint8_t piu_SimUART_getRx(piu_SimUART* simUART)
 {
     if (simUART->flag_rxFrameErr)

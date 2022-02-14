@@ -143,13 +143,37 @@ piu_SimUART* piu_SimUART_construct(piu_SimUART* simUART,
 
 /**
  * @brief Called in timer interrupt, see example at the start of the file
- * @note
+ * @note This is for half duplex operation, when both Rx and Tx share the same
+ *      timer.
  * @param simUART Pointer to a piu_SimUART struct
  * @param rxVal The Rx pin's value
  * @return <b>true</b> if the process is still continuing, <b>false</b> if the
  *      process is complete and the timer can stop and reset
  */
 bool piu_SimUART_halfDuplexTIMUpdate(piu_SimUART* simUART, bool rxVal);
+/**
+ * @brief Call in rx timer interrupt
+ * @note @p piu_SimUART_rxTIMUpdate should <b>NOT</b> share timer interrupt with
+ *      @p piu_SimUART_txTIMUpdate
+ * @note @p piu_SimUART_rxTIMUpdate should <b>NOT</b> be used in combination
+ *      with piu_SimUART_halfDuplexTIMUpdate
+ * @param simUART Pointer to a piu_SimUART struct
+ * @param rxVal The Rx pin's value
+ * @return <b>true</b> if Rx is still in progress, <b>false</b> if the process
+ *      is complete and the timer can stop and reset
+ */
+bool piu_SimUART_rxTIMUpdate(piu_SimUART* simUART, bool rxVal);
+/**
+ * @brief Call in rx timer interrupt
+ * @note @p piu_SimUART_txTIMUpdate should <b>NOT</b> share timer interrupt with
+ *      @p piu_SimUART_rxTIMUpdate
+ * @note @p piu_SimUART_txTIMUpdate should <b>NOT</b> be used in combination
+ *      with piu_SimUART_halfDuplexTIMUpdate
+ * @param simUART Pointer to a piu_SimUART struct
+ * @return <b>true</b> if Tx is still in progress, <b>false</b> if the process
+ *      is complete and the timer can stop and reset
+ */
+bool piu_SimUART_txTIMUpdate(piu_SimUART* simUART);
 /**
  * @brief Called in GPIO interrupt, see example at the start of the file
  * @param simUART Pointer to a piu_SimUART struct
