@@ -41,7 +41,8 @@
  * @note For UART to work at a certain baud, the timer interrupt interval should
  * be set to trigger once for every bit
  *
- * @example For <b>Rx</b>, assuming the <b>piu_SimUART</b> variable is named
+ * @example This example is Sim/Soft UART in half duplex mode.
+ *  For <b>Rx</b>, assuming the <b>piu_SimUART</b> variable is named
  * <b>sUART</b>:
  * @code
  *  void GPIO_FALLING_EDGE_IT_HANDLE(void)
@@ -61,7 +62,8 @@
  *
  *  void TIMER_OVERFLOW_IT_HANDLE(void)
  *  {
- *      if!(piu_SimUART_TIMUpdate(&sUART, GPIO_1))
+ *      // since only one timer is used, full duplex is not possible
+ *      if!(piu_SimUART_halfDuplexTIMUpdate(&sUART, GPIO_1))
  *      {
  *          TIMER_StopCounter();
  *          TIMER_ResetCounter();
@@ -141,12 +143,13 @@ piu_SimUART* piu_SimUART_construct(piu_SimUART* simUART,
 
 /**
  * @brief Called in timer interrupt, see example at the start of the file
+ * @note
  * @param simUART Pointer to a piu_SimUART struct
  * @param rxVal The Rx pin's value
  * @return <b>true</b> if the process is still continuing, <b>false</b> if the
  *      process is complete and the timer can stop and reset
  */
-bool piu_SimUART_TIMUpdate(piu_SimUART* simUART, bool rxVal);
+bool piu_SimUART_halfDuplexTIMUpdate(piu_SimUART* simUART, bool rxVal);
 /**
  * @brief Called in GPIO interrupt, see example at the start of the file
  * @param simUART Pointer to a piu_SimUART struct

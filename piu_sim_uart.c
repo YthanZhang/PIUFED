@@ -162,13 +162,13 @@ bool piu_SimUART_GPIOUpdate(piu_SimUART* simUART, bool rxVal)
 }
 
 
-bool piu_SimUART_TIMUpdate(piu_SimUART* simUART, bool rxVal)
+bool piu_SimUART_halfDuplexTIMUpdate(piu_SimUART* simUART, bool rxVal)
 {
     if (simUART->rxCounter <= RX_COUNT_MAX)
     {
         rxReceiveBit(simUART, rxVal);
     }
-    if (simUART->txCounter <= TX_COUNT_MAX)
+    else if (simUART->txCounter <= TX_COUNT_MAX)
     {
         txSendBit(simUART);
     }
