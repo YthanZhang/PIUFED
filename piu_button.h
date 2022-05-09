@@ -113,6 +113,19 @@ piu_Button* piu_Button_construct(piu_Button* buttonStruct,
 
 
 /**
+ * @brief Use this macro to initialize a piu_Button struct
+ * @param STABLE_THRESHOLD The threshold for how many ticks are needed to
+ *      determine if press or release is stable
+ * @note If a piu_Button struct is initialized with this macro, there's no need
+ *      to call piu_Button_construct
+ */
+#define PIU_BUTTON_MAKE(STABLE_THRESHOLD)                                      \
+    {                                                                          \
+        false, false, false, 0, false, (STABLE_THRESHOLD), 0                   \
+    }
+
+
+/**
  * @brief Pass the button state to this function
  * @param buttonStruct Pointer to a piu_Button struct
  * @param newState The most current state of the button
