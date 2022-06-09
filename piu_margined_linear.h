@@ -36,7 +36,8 @@
 #define PIU_MARGINED_LINEAR_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 
@@ -53,6 +54,12 @@ typedef enum enum_piu_MarginSection
 } piu_MarginSection;
 
 
+/**
+ * @warning You must NEVER directly modify any of the internal data directly,
+ *      always use functions that came with the struct to operate with it.
+ * @warning Modification of internal data without using related functions may
+ *      cause the struct to enter undefined state.
+ */
 typedef struct struct_piu_MarginedLinear
 {
     piu_MarginSection currentState;
@@ -75,36 +82,91 @@ typedef struct struct_piu_MarginedLinear
 } piu_MarginedLinear;
 
 
+/**
+ * @brief Create a margined linear (state machine)/(function)
+ * @param marginedLinear Pointer to a empty piu_MarginedLinear struct
+ * @param xOff The off input level from <b>on</b> state
+ * @param xOn The on input level from <b>off</b> state
+ * @param xLowLinear The low linear input level, below this value the output is
+ *      @p yLowFlat, above this value the output is linear from @p yLowFlat to
+ *      @p yHighFlat until @p xHighLinear
+ * @param xHighLinear The high linear input level, below this value the output
+ *      is linear from @p yLowFlat to @p yHighFlat , above this value the output
+ *      is @p yHighFlat
+ * @param xStepDown The output will step down from @p yMaxFlat to @p yHighFlat
+ *      when input level goes below this value
+ * @param xStepUp The output will step up from @p yHighFlat to @p yMaxFlat when
+ *      input level goes above this value
+ * @param yOff The off state output value
+ * @param yLowFlat The low flat state output value, also the low value of the
+ *      linear section
+ * @param yHighFlat The high flat state output value, also the high value of the
+ *      linear section
+ * @param yMaxFlat The maximum output level when input is greater than @p
+ *      xStepUp
+ * @return Pointer to the struct passed in
+ */
 piu_MarginedLinear* piu_MarginedLinear_construct(
     piu_MarginedLinear* marginedLinear,
-    uint16_t offPoint,
-    uint16_t onPoint,
-    uint16_t lowLinearPoint,
-    uint16_t highLinearPoint,
-    uint16_t stepDownPoint,
-    uint16_t stepUpPoint,
-    uint16_t offVal,
-    uint16_t lowFlatVal,
-    uint16_t highFlatVal,
-    uint16_t maxFlatVal);
+    uint16_t xOff,
+    uint16_t xOn,
+    uint16_t xLowLinear,
+    uint16_t xHighLinear,
+    uint16_t xStepDown,
+    uint16_t xStepUp,
+    uint16_t yOff,
+    uint16_t yLowFlat,
+    uint16_t yHighFlat,
+    uint16_t yMaxFlat);
 
 
-uint16_t piu_MarginedLinear_input(piu_MarginedLinear* marginedLinear,
-                                  uint16_t inputVal);
-uint16_t piu_MarginedLinear_output(piu_MarginedLinear* marginedLinear);
+/**
+ * @brief Update state machine with new input value
+ * @param marginedLinear Pointer to a piu_MarginedLinear struct
+ * @param inputVal the new input value
+ * @return The new output value
+ */
+uint16_t piu_MarginedLinear_setX(piu_MarginedLinear* marginedLinear,
+                                 uint16_t inputVal);
 
-void piu_MarginedLinear_updatePoints(piu_MarginedLinear* marginedLinear,
-                                     uint16_t offPoint,
-                                     uint16_t onPoint,
-                                     uint16_t lowLinearPoint,
-                                     uint16_t highLinearPoint,
-                                     uint16_t stepDownPoint,
-                                     uint16_t stepUpPoint);
-void piu_MarginedLinear_updateVal(piu_MarginedLinear* marginedLinear,
-                                  uint16_t offVal,
-                                  uint16_t lowFlatVal,
-                                  uint16_t highFlatVal,
-                                  uint16_t maxFlatVal);
+/**
+ * @brief Get the latest output value
+ * @param marginedLinear Pointer to a piu_MarginedLinear struct
+ * @return The latest output value
+ */
+uint16_t piu_MarginedLinear_getY(const piu_MarginedLinear* marginedLinear);
+
+
+/**
+ * @brief Update the state machine with a different set of x values
+ * @param marginedLinear Pointer to a piu_MarginedLinear struct
+ * @param xOff The new off input level
+ * @param xOn  The new on input level
+ * @param xLowLinear The new low linear input level
+ * @param xHighLinear The new high linear input level
+ * @param xStepDown The new step down input level
+ * @param xStepUp The new step up input level
+ */
+void piu_MarginedLinear_updateInput(piu_MarginedLinear* marginedLinear,
+                                    uint16_t xOff,
+                                    uint16_t xOn,
+                                    uint16_t xLowLinear,
+                                    uint16_t xHighLinear,
+                                    uint16_t xStepDown,
+                                    uint16_t xStepUp);
+/**
+ * @brief Update the state machine with a different set of y values
+ * @param marginedLinear Pointer to a piu_MarginedLinear struct
+ * @param yOff The new off output value
+ * @param yLowFlat The new low flat output value
+ * @param yHighFlat The new high flat output value
+ * @param yMaxFlat The new max flat output value
+ */
+void piu_MarginedLinear_updateOutput(piu_MarginedLinear* marginedLinear,
+                                     uint16_t yOff,
+                                     uint16_t yLowFlat,
+                                     uint16_t yHighFlat,
+                                     uint16_t yMaxFlat);
 
 
 #ifdef __cplusplus
