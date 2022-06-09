@@ -47,6 +47,33 @@ static float calcLinear(uint16_t highFlatVal,
 }
 
 
+piu_MarginedLinear piu_MarginedLinear_make(uint16_t xOff,
+                                           uint16_t xOn,
+                                           uint16_t xLowLinear,
+                                           uint16_t xHighLinear,
+                                           uint16_t xStepDown,
+                                           uint16_t xStepUp,
+                                           uint16_t yOff,
+                                           uint16_t yLowFlat,
+                                           uint16_t yHighFlat,
+                                           uint16_t yMaxFlat)
+{
+    piu_MarginedLinear ml = {};
+    piu_MarginedLinear_construct(&ml,
+                                 xOff,
+                                 xOn,
+                                 xLowLinear,
+                                 xHighLinear,
+                                 xStepDown,
+                                 xStepUp,
+                                 yOff,
+                                 yLowFlat,
+                                 yHighFlat,
+                                 yMaxFlat);
+    return ml;
+}
+
+
 piu_MarginedLinear* piu_MarginedLinear_construct(
     piu_MarginedLinear* marginedLinear,
     uint16_t xOff,
@@ -73,7 +100,7 @@ piu_MarginedLinear* piu_MarginedLinear_construct(
                                     yHighFlat,
                                     yMaxFlat);
 
-    marginedLinear->lastInput = xOff;
+    marginedLinear->lastInput    = xOff;
     marginedLinear->currentState = piu_MarginState_Off;
 
     return marginedLinear;
@@ -81,7 +108,7 @@ piu_MarginedLinear* piu_MarginedLinear_construct(
 
 
 uint16_t piu_MarginedLinear_setX(piu_MarginedLinear* marginedLinear,
-                                  uint16_t inputVal)
+                                 uint16_t inputVal)
 {
     marginedLinear->lastInput = inputVal;
 
@@ -184,15 +211,15 @@ uint16_t piu_MarginedLinear_getY(const piu_MarginedLinear* marginedLinear)
 }
 
 void piu_MarginedLinear_updateInput(piu_MarginedLinear* marginedLinear,
-                                     uint16_t xOff,
-                                     uint16_t xOn,
-                                     uint16_t xLowLinear,
-                                     uint16_t xHighLinear,
-                                     uint16_t xStepDown,
-                                     uint16_t xStepUp)
+                                    uint16_t xOff,
+                                    uint16_t xOn,
+                                    uint16_t xLowLinear,
+                                    uint16_t xHighLinear,
+                                    uint16_t xStepDown,
+                                    uint16_t xStepUp)
 {
     marginedLinear->currentState = piu_MarginState_Off;
-    
+
     // Check and fix inversion, this struct/class/statemachine is only defined
     // when these values are in this order:
     // offPoint <= onPoint <= lowLinearPoint <= highLinearPoint <= stepDownPoint
@@ -229,15 +256,15 @@ void piu_MarginedLinear_updateInput(piu_MarginedLinear* marginedLinear,
                                             marginedLinear->lowFlatVal,
                                             xHighLinear,
                                             xLowLinear);
-    
+
     piu_MarginedLinear_setX(marginedLinear, marginedLinear->lastInput);
 }
 
 void piu_MarginedLinear_updateOutput(piu_MarginedLinear* marginedLinear,
-                                  uint16_t yOff,
-                                  uint16_t yLowFlat,
-                                  uint16_t yHighFlat,
-                                  uint16_t yMaxFlat)
+                                     uint16_t yOff,
+                                     uint16_t yLowFlat,
+                                     uint16_t yHighFlat,
+                                     uint16_t yMaxFlat)
 {
     marginedLinear->offVal      = yOff;
     marginedLinear->lowFlatVal  = yLowFlat;
