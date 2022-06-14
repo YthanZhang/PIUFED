@@ -245,12 +245,12 @@ void piu_MarginedLinear_updateInput(piu_MarginedLinear* marginedLinear,
         xStepUp = xStepDown;
     }
 
-    marginedLinear->xOff            = xOff;
-    marginedLinear->xOn             = xOn;
-    marginedLinear->xLinearLow      = xLowLinear;
-    marginedLinear->xLinearHigh     = xHighLinear;
-    marginedLinear->xStepDown       = xStepDown;
-    marginedLinear->xStepUp         = xStepUp;
+    marginedLinear->xOff        = xOff;
+    marginedLinear->xOn         = xOn;
+    marginedLinear->xLinearLow  = xLowLinear;
+    marginedLinear->xLinearHigh = xHighLinear;
+    marginedLinear->xStepDown   = xStepDown;
+    marginedLinear->xStepUp     = xStepUp;
 
     marginedLinear->linearRate = calcLinear(marginedLinear->yHighFlat,
                                             marginedLinear->yLowFlat,
@@ -266,13 +266,234 @@ void piu_MarginedLinear_updateOutput(piu_MarginedLinear* marginedLinear,
                                      uint16_t yHighFlat,
                                      uint16_t yMaxFlat)
 {
-    marginedLinear->yOff        = yOff;
-    marginedLinear->yLowFlat    = yLowFlat;
-    marginedLinear->yHighFlat   = yHighFlat;
-    marginedLinear->yMaxFlat    = yMaxFlat;
+    marginedLinear->yOff      = yOff;
+    marginedLinear->yLowFlat  = yLowFlat;
+    marginedLinear->yHighFlat = yHighFlat;
+    marginedLinear->yMaxFlat  = yMaxFlat;
 
     marginedLinear->linearRate = calcLinear(yHighFlat,
                                             yLowFlat,
                                             marginedLinear->xLinearHigh,
                                             marginedLinear->xLinearLow);
+}
+
+
+void piu_MarginedLinear_updateXOff(piu_MarginedLinear* marginedLinear,
+                                   uint16_t xOff)
+{
+    piu_MarginedLinear_updateInput(marginedLinear,
+                                   xOff,
+                                   marginedLinear->xOn,
+                                   marginedLinear->xLinearLow,
+                                   marginedLinear->xLinearHigh,
+                                   marginedLinear->xStepDown,
+                                   marginedLinear->xStepUp);
+}
+void piu_MarginedLinear_updateXOn(piu_MarginedLinear* marginedLinear,
+                                  uint16_t xOn)
+{
+    piu_MarginedLinear_updateInput(marginedLinear,
+                                   marginedLinear->xOff,
+                                   xOn,
+                                   marginedLinear->xLinearLow,
+                                   marginedLinear->xLinearHigh,
+                                   marginedLinear->xStepDown,
+                                   marginedLinear->xStepUp);
+}
+void piu_MarginedLinear_updateXLinearLow(piu_MarginedLinear* marginedLinear,
+                                         uint16_t xLinearLow)
+{
+    piu_MarginedLinear_updateInput(marginedLinear,
+                                   marginedLinear->xOff,
+                                   marginedLinear->xOn,
+                                   xLinearLow,
+                                   marginedLinear->xLinearHigh,
+                                   marginedLinear->xStepDown,
+                                   marginedLinear->xStepUp);
+}
+void piu_MarginedLinear_updateXLinearHigh(piu_MarginedLinear* marginedLinear,
+                                          uint16_t xLinearHigh)
+{
+    piu_MarginedLinear_updateInput(marginedLinear,
+                                   marginedLinear->xOff,
+                                   marginedLinear->xOn,
+                                   marginedLinear->xLinearLow,
+                                   xLinearHigh,
+                                   marginedLinear->xStepDown,
+                                   marginedLinear->xStepUp);
+}
+void piu_MarginedLinear_updateXStepDown(piu_MarginedLinear* marginedLinear,
+                                        uint16_t xStepDown)
+{
+    piu_MarginedLinear_updateInput(marginedLinear,
+                                   marginedLinear->xOff,
+                                   marginedLinear->xOn,
+                                   marginedLinear->xLinearLow,
+                                   marginedLinear->xLinearHigh,
+                                   xStepDown,
+                                   marginedLinear->xStepUp);
+}
+void piu_MarginedLinear_updateXStepUp(piu_MarginedLinear* marginedLinear,
+                                      uint16_t xStepUp)
+{
+    piu_MarginedLinear_updateInput(marginedLinear,
+                                   marginedLinear->xOff,
+                                   marginedLinear->xOn,
+                                   marginedLinear->xLinearLow,
+                                   marginedLinear->xLinearHigh,
+                                   marginedLinear->xStepDown,
+                                   xStepUp);
+}
+
+void piu_MarginedLinear_updateYOff(piu_MarginedLinear* marginedLinear,
+                                   uint16_t yOff)
+{
+    piu_MarginedLinear_updateOutput(marginedLinear,
+                                    yOff,
+                                    marginedLinear->yLowFlat,
+                                    marginedLinear->yHighFlat,
+                                    marginedLinear->yMaxFlat);
+}
+void piu_MarginedLinear_updateYLowFlat(piu_MarginedLinear* marginedLinear,
+                                       uint16_t yLowFlat)
+{
+    piu_MarginedLinear_updateOutput(marginedLinear,
+                                    marginedLinear->yOff,
+                                    yLowFlat,
+                                    marginedLinear->yHighFlat,
+                                    marginedLinear->yMaxFlat);
+}
+void piu_MarginedLinear_updateYHighFlat(piu_MarginedLinear* marginedLinear,
+                                        uint16_t yHighFlat)
+{
+    piu_MarginedLinear_updateOutput(marginedLinear,
+                                    marginedLinear->yOff,
+                                    marginedLinear->yLowFlat,
+                                    yHighFlat,
+                                    marginedLinear->yMaxFlat);
+}
+void piu_MarginedLinear_updateYMaxFlat(piu_MarginedLinear* marginedLinear,
+                                       uint16_t yMaxFlat)
+{
+    piu_MarginedLinear_updateOutput(marginedLinear,
+                                    marginedLinear->yOff,
+                                    marginedLinear->yLowFlat,
+                                    marginedLinear->yHighFlat,
+                                    yMaxFlat);
+}
+
+
+void piu_MarginedLinear_shrinkRangeX(piu_MarginedLinear* marginedLinear,
+                                     uint16_t low,
+                                     uint16_t high)
+{
+    if (low > high)
+    {
+        return;
+    }
+
+    if (marginedLinear->xOff >= low && marginedLinear->xStepUp <= high)
+    {
+        return;
+    }
+
+    if (marginedLinear->xStepUp > high)
+    {
+        marginedLinear->xStepUp = high;
+    }
+    if (marginedLinear->xStepDown > marginedLinear->xStepUp)
+    {
+        marginedLinear->xStepDown = marginedLinear->xStepUp;
+    }
+    if (marginedLinear->xLinearHigh > marginedLinear->xStepDown)
+    {
+        marginedLinear->xLinearHigh = marginedLinear->xStepDown;
+    }
+    if (marginedLinear->xLinearLow > marginedLinear->xLinearHigh)
+    {
+        marginedLinear->xLinearLow = marginedLinear->xLinearHigh;
+    }
+    if (marginedLinear->xOn > marginedLinear->xLinearLow)
+    {
+        marginedLinear->xOn = marginedLinear->xLinearLow;
+    }
+    if (marginedLinear->xOff > marginedLinear->xOn)
+    {
+        marginedLinear->xOff = marginedLinear->xOn;
+    }
+
+    if (marginedLinear->xOff < low)
+    {
+        marginedLinear->xOff = low;
+    }
+    if (marginedLinear->xOn < marginedLinear->xOff)
+    {
+        marginedLinear->xOn = marginedLinear->xOff;
+    }
+    if (marginedLinear->xLinearLow < marginedLinear->xOn)
+    {
+        marginedLinear->xLinearLow = marginedLinear->xOn;
+    }
+    if (marginedLinear->xLinearHigh < marginedLinear->xLinearLow)
+    {
+        marginedLinear->xLinearHigh = marginedLinear->xLinearLow;
+    }
+    if (marginedLinear->xStepDown < marginedLinear->xLinearHigh)
+    {
+        marginedLinear->xStepDown = marginedLinear->xLinearHigh;
+    }
+    if (marginedLinear->xStepUp < marginedLinear->xStepDown)
+    {
+        marginedLinear->xStepUp = marginedLinear->xStepDown;
+    }
+}
+
+
+void piu_MarginedLinear_shrinkRangeY(piu_MarginedLinear* marginedLinear,
+                                     uint16_t low,
+                                     uint16_t high)
+{
+    if (low > high)
+    {
+        return;
+    }
+
+    if ((marginedLinear->yOff >= low) && (marginedLinear->yMaxFlat <= high))
+    {
+        return;
+    }
+
+    if (marginedLinear->yOff < low)
+    {
+        marginedLinear->yOff = low;
+    }
+    if (marginedLinear->yLowFlat < marginedLinear->yOff)
+    {
+        marginedLinear->yLowFlat = marginedLinear->yOff;
+    }
+    if (marginedLinear->yHighFlat < marginedLinear->yLowFlat)
+    {
+        marginedLinear->yHighFlat = marginedLinear->yLowFlat;
+    }
+    if (marginedLinear->yMaxFlat < marginedLinear->yHighFlat)
+    {
+        marginedLinear->yMaxFlat = marginedLinear->yHighFlat;
+    }
+
+    if (marginedLinear->yMaxFlat > high)
+    {
+        marginedLinear->yMaxFlat = high;
+    }
+    if (marginedLinear->yHighFlat > marginedLinear->yMaxFlat)
+    {
+        marginedLinear->yHighFlat = marginedLinear->yMaxFlat;
+    }
+    if (marginedLinear->yLowFlat > marginedLinear->yHighFlat)
+    {
+        marginedLinear->yLowFlat = marginedLinear->yHighFlat;
+    }
+    if (marginedLinear->yOff > marginedLinear->yLowFlat)
+    {
+        marginedLinear->yOff = marginedLinear->yLowFlat;
+    }
 }

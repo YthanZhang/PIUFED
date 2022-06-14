@@ -203,6 +203,36 @@ void piu_MarginedLinear_updateOutput(piu_MarginedLinear* marginedLinear,
                                      uint16_t yHighFlat,
                                      uint16_t yMaxFlat);
 
+void piu_MarginedLinear_updateXOff(piu_MarginedLinear* marginedLinear,
+                                   uint16_t xOff);
+void piu_MarginedLinear_updateXOn(piu_MarginedLinear* marginedLinear,
+                                  uint16_t xOn);
+void piu_MarginedLinear_updateXLinearLow(piu_MarginedLinear* marginedLinear,
+                                         uint16_t xLinearLow);
+void piu_MarginedLinear_updateXLinearHigh(piu_MarginedLinear* marginedLinear,
+                                          uint16_t xLinearHigh);
+void piu_MarginedLinear_updateXStepDown(piu_MarginedLinear* marginedLinear,
+                                        uint16_t xStepDown);
+void piu_MarginedLinear_updateXStepUp(piu_MarginedLinear* marginedLinear,
+                                      uint16_t xStepUp);
+
+void piu_MarginedLinear_updateYOff(piu_MarginedLinear* marginedLinear,
+                                   uint16_t yOff);
+void piu_MarginedLinear_updateYLowFlat(piu_MarginedLinear* marginedLinear,
+                                       uint16_t yLowFlat);
+void piu_MarginedLinear_updateYHighFlat(piu_MarginedLinear* marginedLinear,
+                                        uint16_t yHighFlat);
+void piu_MarginedLinear_updateYMaxFlat(piu_MarginedLinear* marginedLinear,
+                                       uint16_t yMaxFlat);
+
+
+void piu_MarginedLinear_shrinkRangeX(piu_MarginedLinear* marginedLinear,
+                                     uint16_t low,
+                                     uint16_t high);
+void piu_MarginedLinear_shrinkRangeY(piu_MarginedLinear* marginedLinear,
+                                     uint16_t low,
+                                     uint16_t high);
+
 
 #ifdef __cplusplus
 }
