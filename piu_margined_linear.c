@@ -117,7 +117,7 @@ uint16_t piu_MarginedLinear_setX(piu_MarginedLinear* marginedLinear,
         switch (marginedLinear->currentState)
         {
         case (piu_MarginState_Off): {
-            if (inputVal > marginedLinear->onPoint)
+            if (inputVal > marginedLinear->xOn)
             {
                 marginedLinear->currentState = piu_MarginState_LowFlat;
                 continue;
@@ -125,12 +125,12 @@ uint16_t piu_MarginedLinear_setX(piu_MarginedLinear* marginedLinear,
             break;
         }
         case (piu_MarginState_LowFlat): {
-            if (inputVal > marginedLinear->lowLinearPoint)
+            if (inputVal > marginedLinear->xLinearLow)
             {
                 marginedLinear->currentState = piu_MarginState_Linear;
                 continue;
             }
-            else if (inputVal <= marginedLinear->offPoint)
+            else if (inputVal <= marginedLinear->xOff)
             {
                 marginedLinear->currentState = piu_MarginState_Off;
                 continue;
@@ -138,12 +138,12 @@ uint16_t piu_MarginedLinear_setX(piu_MarginedLinear* marginedLinear,
             break;
         }
         case (piu_MarginState_Linear): {
-            if (inputVal > marginedLinear->highLinearPoint)
+            if (inputVal > marginedLinear->xLinearHigh)
             {
                 marginedLinear->currentState = piu_MarginState_HighFlat;
                 continue;
             }
-            else if (inputVal <= marginedLinear->lowLinearPoint)
+            else if (inputVal <= marginedLinear->xLinearLow)
             {
                 marginedLinear->currentState = piu_MarginState_LowFlat;
                 continue;
@@ -151,12 +151,12 @@ uint16_t piu_MarginedLinear_setX(piu_MarginedLinear* marginedLinear,
             break;
         }
         case (piu_MarginState_HighFlat): {
-            if (inputVal > marginedLinear->stepUpPoint)
+            if (inputVal > marginedLinear->xStepUp)
             {
                 marginedLinear->currentState = piu_MarginState_MaxFlat;
                 continue;
             }
-            else if (inputVal <= marginedLinear->highLinearPoint)
+            else if (inputVal <= marginedLinear->xLinearHigh)
             {
                 marginedLinear->currentState = piu_MarginState_Linear;
                 continue;
@@ -164,7 +164,7 @@ uint16_t piu_MarginedLinear_setX(piu_MarginedLinear* marginedLinear,
             break;
         }
         case (piu_MarginState_MaxFlat): {
-            if (inputVal <= marginedLinear->stepDownPoint)
+            if (inputVal <= marginedLinear->xStepDown)
             {
                 marginedLinear->currentState = piu_MarginState_HighFlat;
                 continue;
@@ -187,25 +187,25 @@ uint16_t piu_MarginedLinear_getY(const piu_MarginedLinear* marginedLinear)
     switch (marginedLinear->currentState)
     {
     case (piu_MarginState_Off): {
-        return marginedLinear->offVal;
+        return marginedLinear->yOff;
     }
     case (piu_MarginState_LowFlat): {
-        return marginedLinear->lowFlatVal;
+        return marginedLinear->yLowFlat;
     }
     case (piu_MarginState_Linear): {
         return (uint16_t)((marginedLinear->linearRate *
                            (float)(marginedLinear->lastInput -
-                                   marginedLinear->lowLinearPoint)) +
-                          (float)marginedLinear->lowFlatVal);
+                                   marginedLinear->xLinearLow)) +
+                          (float)marginedLinear->yLowFlat);
     }
     case (piu_MarginState_HighFlat): {
-        return marginedLinear->highFlatVal;
+        return marginedLinear->yHighFlat;
     }
     case (piu_MarginState_MaxFlat): {
-        return marginedLinear->maxFlatVal;
+        return marginedLinear->yMaxFlat;
     }
     default: {
-        return marginedLinear->offVal;
+        return marginedLinear->yOff;
     }
     }
 }
@@ -245,15 +245,15 @@ void piu_MarginedLinear_updateInput(piu_MarginedLinear* marginedLinear,
         xStepUp = xStepDown;
     }
 
-    marginedLinear->offPoint        = xOff;
-    marginedLinear->onPoint         = xOn;
-    marginedLinear->lowLinearPoint  = xLowLinear;
-    marginedLinear->highLinearPoint = xHighLinear;
-    marginedLinear->stepDownPoint   = xStepDown;
-    marginedLinear->stepUpPoint     = xStepUp;
+    marginedLinear->xOff            = xOff;
+    marginedLinear->xOn             = xOn;
+    marginedLinear->xLinearLow      = xLowLinear;
+    marginedLinear->xLinearHigh     = xHighLinear;
+    marginedLinear->xStepDown       = xStepDown;
+    marginedLinear->xStepUp         = xStepUp;
 
-    marginedLinear->linearRate = calcLinear(marginedLinear->highFlatVal,
-                                            marginedLinear->lowFlatVal,
+    marginedLinear->linearRate = calcLinear(marginedLinear->yHighFlat,
+                                            marginedLinear->yLowFlat,
                                             xHighLinear,
                                             xLowLinear);
 
@@ -266,13 +266,13 @@ void piu_MarginedLinear_updateOutput(piu_MarginedLinear* marginedLinear,
                                      uint16_t yHighFlat,
                                      uint16_t yMaxFlat)
 {
-    marginedLinear->offVal      = yOff;
-    marginedLinear->lowFlatVal  = yLowFlat;
-    marginedLinear->highFlatVal = yHighFlat;
-    marginedLinear->maxFlatVal  = yMaxFlat;
+    marginedLinear->yOff        = yOff;
+    marginedLinear->yLowFlat    = yLowFlat;
+    marginedLinear->yHighFlat   = yHighFlat;
+    marginedLinear->yMaxFlat    = yMaxFlat;
 
     marginedLinear->linearRate = calcLinear(yHighFlat,
                                             yLowFlat,
-                                            marginedLinear->highLinearPoint,
-                                            marginedLinear->lowLinearPoint);
+                                            marginedLinear->xLinearHigh,
+                                            marginedLinear->xLinearLow);
 }

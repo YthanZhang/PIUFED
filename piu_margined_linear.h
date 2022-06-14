@@ -64,17 +64,17 @@ typedef struct struct_piu_MarginedLinear
 {
     piu_MarginSection currentState;
 
-    uint16_t offPoint;
-    uint16_t onPoint;
-    uint16_t lowLinearPoint;
-    uint16_t highLinearPoint;
-    uint16_t stepDownPoint;
-    uint16_t stepUpPoint;
+    uint16_t xOff;
+    uint16_t xOn;
+    uint16_t xLinearLow;
+    uint16_t xLinearHigh;
+    uint16_t xStepDown;
+    uint16_t xStepUp;
 
-    uint16_t offVal;
-    uint16_t lowFlatVal;
-    uint16_t highFlatVal;
-    uint16_t maxFlatVal;
+    uint16_t yOff;
+    uint16_t yLowFlat;
+    uint16_t yHighFlat;
+    uint16_t yMaxFlat;
 
     float linearRate;
 
