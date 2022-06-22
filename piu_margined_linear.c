@@ -463,13 +463,9 @@ void piu_MarginedLinear_shrinkRangeY(piu_MarginedLinear* marginedLinear,
         return;
     }
 
-    if (marginedLinear->yOff < low)
+    if (marginedLinear->yLowFlat < low)
     {
-        marginedLinear->yOff = low;
-    }
-    if (marginedLinear->yLowFlat < marginedLinear->yOff)
-    {
-        marginedLinear->yLowFlat = marginedLinear->yOff;
+        marginedLinear->yLowFlat = low;
     }
     if (marginedLinear->yHighFlat < marginedLinear->yLowFlat)
     {
