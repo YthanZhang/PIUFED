@@ -446,6 +446,11 @@ void piu_MarginedLinear_shrinkRangeX(piu_MarginedLinear* marginedLinear,
     {
         marginedLinear->xStepUp = marginedLinear->xStepDown;
     }
+
+    marginedLinear->linearRate = calcLinear(marginedLinear->yHighFlat,
+                                            marginedLinear->yLowFlat,
+                                            marginedLinear->xLinearHigh,
+                                            marginedLinear->xLinearLow);
 }
 
 
@@ -492,4 +497,9 @@ void piu_MarginedLinear_shrinkRangeY(piu_MarginedLinear* marginedLinear,
     {
         marginedLinear->yOff = marginedLinear->yLowFlat;
     }
+    
+    marginedLinear->linearRate = calcLinear(marginedLinear->yHighFlat,
+                                            marginedLinear->yLowFlat,
+                                            marginedLinear->xLinearHigh,
+                                            marginedLinear->xLinearLow);
 }
