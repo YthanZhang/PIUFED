@@ -36,6 +36,8 @@
 
 #include <stdbool.h>
 
+#include "piu_number.h"
+
 
 static float calcLinear(uint16_t highFlatVal,
                         uint16_t lowFlatVal,
@@ -497,9 +499,43 @@ void piu_MarginedLinear_shrinkRangeY(piu_MarginedLinear* marginedLinear,
     {
         marginedLinear->yOff = marginedLinear->yLowFlat;
     }
-    
+
     marginedLinear->linearRate = calcLinear(marginedLinear->yHighFlat,
                                             marginedLinear->yLowFlat,
                                             marginedLinear->xLinearHigh,
                                             marginedLinear->xLinearLow);
+}
+
+
+bool piu_MarginedLinear_remapY(piu_MarginedLinear* marginedLinear,
+                               uint16_t originalLow,
+                               uint16_t originalHigh,
+                               uint16_t newLow,
+                               uint16_t newHigh)
+{
+    if (originalLow >= originalHigh || newLow >= newHigh)
+    {
+        return false;
+    }
+    if (originalLow > marginedLinear->yLowFlat ||
+        originalHigh < marginedLinear->yMaxFlat)
+    {
+        return false;
+    }
+
+    const f32 rangeDiff = (f32)(newHigh - newLow) /
+                          (f32)(originalHigh - originalLow);
+    const f32 newLow_f32 = (f32)newLow;
+
+    marginedLinear->yLowFlat =
+        (u16)((f32)(marginedLinear->yLowFlat - originalLow) * rangeDiff +
+              newLow_f32 + 0.5f);
+    marginedLinear->yHighFlat =
+        (u16)((f32)(marginedLinear->yHighFlat - originalLow) * rangeDiff +
+              newLow_f32 + 0.5f);
+    marginedLinear->yMaxFlat =
+        (u16)((f32)(marginedLinear->yMaxFlat - originalLow) * rangeDiff +
+              newLow_f32 + 0.5f);
+
+    return true;
 }

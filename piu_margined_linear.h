@@ -232,6 +232,11 @@ void piu_MarginedLinear_shrinkRangeX(piu_MarginedLinear* marginedLinear,
 void piu_MarginedLinear_shrinkRangeY(piu_MarginedLinear* marginedLinear,
                                      uint16_t low,
                                      uint16_t high);
+bool piu_MarginedLinear_remapY(piu_MarginedLinear* marginedLinear,
+                               uint16_t originalLow,
+                               uint16_t originalHigh,
+                               uint16_t newLow,
+                               uint16_t newHigh);
 
 
 #ifdef __cplusplus
