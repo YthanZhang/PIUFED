@@ -42,6 +42,7 @@ extern "C"
 
 
 #include <stdint.h>
+#include <stdbool.h>
 
 
 typedef enum enum_piu_MarginSection
