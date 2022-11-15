@@ -43,6 +43,8 @@ add_library(PIUFED
         piu_sim_uart.c
         piu_modbus_crc16.c
         piu_modbus_crc16.h
+        piu_integrity.c
+        piu_integrity.h
         )
 
 target_compile_options(PIUFED PRIVATE -std=c99)
